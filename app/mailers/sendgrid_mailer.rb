@@ -32,6 +32,7 @@ class SendgridMailer < ActionMailer::Base
 
   def prepare(email, options)
     headers['X-SMTPAPI'] = prepare_sendgrid_headers(email, options)
+    Rails.logger.info("X-SMTPAPI is #{headers['X-SMTPAPI']}")
     headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
     subject = get_subject(email, options)
     #binding.pry
@@ -87,6 +88,12 @@ protected
       'sub' => get_substitutions_list(email_to_send, options),
       'unique_args' => { 'email_id' => email_to_send.id }
     }
+
+    Rails.logger.info("email_to_send is #{email_to_send}")
+    Rails.logger.info("options is #{options}")
+    Rails.logger.info("email_to_send.respond_to?(:blast) is #{email_to_send.respond_to?(:blast)}")
+    Rails.logger.info("category is #{category}")
+    Rails.logger.info("email_headers in #{email_headers}")
 
     raise_error_if_sizes_dont_match(options[:recipients].size, email_headers['sub'][email_headers['sub'].keys.first].size)
     email_headers.to_json
