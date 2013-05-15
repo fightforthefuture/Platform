@@ -146,6 +146,10 @@ PurposePlatform::Application.routes.draw do
 
   # Friendly_ID URLs for all campaign/static pages.
   match "(/campaigns/:campaign_id)/:action_sequence_id(/:id)" => "pages#show", :as => "page"
+  
+  scope 'fftf', :module => "fftf" do
+    resources :users
+  end
 
   root :to => "admin/movements#index"
 end
