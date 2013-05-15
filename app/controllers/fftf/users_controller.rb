@@ -17,7 +17,7 @@ class Fftf::UsersController < Fftf::BaseController
         @movement.members << @user
         MailSender.new.send_join_email(@member, movement)
       end
-      response = @user.as_json.merge {success: true, user_id: @user.id}
+      response = @user.as_json.merge({success: true, user_id: @user.id})
     else
       response = {success: false, errors: @user.errors.messages}
     end
