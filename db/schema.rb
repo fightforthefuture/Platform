@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130327195212) do
+ActiveRecord::Schema.define(:version => 20130517173716) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -172,6 +172,14 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.text     "text"
+  end
+
+  create_table "email_recipient_details", :force => true do |t|
+    t.integer  "email_id"
+    t.integer  "recipients_count"
+    t.text     "sent_to_users_ids"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
   end
 
   create_table "emails", :force => true do |t|
@@ -501,19 +509,17 @@ ActiveRecord::Schema.define(:version => 20130327195212) do
   add_index "unique_activity_by_emails", ["email_id", "activity"], :name => "index_unique_activity_by_emails_on_email_id_and_activity", :unique => true
 
   create_table "user_activity_events", :force => true do |t|
-    t.integer  "user_id",                                :null => false
-    t.string   "activity",                 :limit => 64, :null => false
+    t.integer  "user_id",                           :null => false
+    t.string   "activity",            :limit => 64, :null => false
     t.integer  "campaign_id"
     t.integer  "action_sequence_id"
     t.integer  "page_id"
     t.integer  "content_module_id"
-    t.string   "content_module_type",      :limit => 64
+    t.string   "content_module_type", :limit => 64
     t.integer  "user_response_id"
-    t.string   "user_response_type",       :limit => 64
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
-    t.integer  "donation_amount_in_cents"
-    t.string   "donation_frequency"
+    t.string   "user_response_type",  :limit => 64
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.integer  "email_id"
     t.integer  "push_id"
     t.integer  "movement_id"

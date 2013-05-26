@@ -83,12 +83,7 @@ PurposePlatform::Application.routes.draw do
         post :cancel_schedule
       end
 
-      resources :users do
-        member do
-          get :transactions
-          get :transaction_report
-        end
-      end
+      resources :users
       
       resources :join_emails, :only => [:index]
       post "join_emails" => "join_emails#update"
@@ -106,38 +101,40 @@ PurposePlatform::Application.routes.draw do
   end
 
   scope 'api', :module => "api" do
-    match 'movements/:movement_id' => 'movements#show'
+    scope "/:locale", :locale => /(..){1}/ do
+      match 'movements/:movement_id' => 'movements#show'
+
+      scope 'movements/:movement_id' do
+        resources :content_pages, :only => [:show] do
+          member do
+            get 'preview'
+          end
+        end
+        resource  :activity, :only => [:show]
+        resources :action_pages, :only => [:show] do
+          member do
+            get  'member_fields'
+            post 'take_action'
+            post 'donation_payment_error'
+            get 'preview'
+            get 'share_counts'
+          end
+        end
+      end
+    end
 
     scope 'movements/:movement_id' do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
+
       resources :members, :only => [:create]
-      resources :content_pages, :only => [:show] do
-        member do
-          get 'preview'
-        end
-      end
-      resource  :activity, :only => [:show]
-      resources :action_pages, :only => [:show] do
-        member do
-          get  'member_fields'
-          post 'take_action'
-          post 'donation_payment_error'
-          get 'preview'
-        end
-      end
-      #VERSION remove after #626 is deployed to all movements
-      resources :activity, :only => [:show]
-      resources :shares, :only => [:create] do
-        member do
-          get 'share_counts'
-        end
-      end
+      get 'members' => 'members#show'
+      resources :shares, :only => [:create]
+
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 
-      get 'members/member_info' => "members#member_info"
-      resources :donations, :only => [:show]
+      get 'donations' => 'donations#show'
       post 'donations/confirm_payment' => "donations#confirm_payment"
       post 'donations/add_payment' => "donations#add_payment"
       post 'donations/handle_failed_payment' => "donations#handle_failed_payment"
@@ -146,6 +143,10 @@ PurposePlatform::Application.routes.draw do
 
   # Friendly_ID URLs for all campaign/static pages.
   match "(/campaigns/:campaign_id)/:action_sequence_id(/:id)" => "pages#show", :as => "page"
+  
+  scope 'fftf', :module => "fftf" do
+    resources :users
+  end
 
   root :to => "admin/movements#index"
 end
