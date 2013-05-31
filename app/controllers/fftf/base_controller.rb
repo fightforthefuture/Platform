@@ -1,6 +1,6 @@
 class Fftf::BaseController < ApplicationController
   
-  before_filter :api_authenticate
+  #before_filter :api_authenticate
   
   def current_api_user
     User.find_by_id_and_api_token(params[:user_id], request.headers['HTTP_X_API_TOKEN'] || params[:token])
