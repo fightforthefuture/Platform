@@ -1,6 +1,3 @@
-class PagesController < ApplicationController
-end
-
 class ApplicationController < ActionController::Base
   protect_from_forgery
   include SessionsHelper
@@ -51,4 +48,7 @@ class ApplicationController < ActionController::Base
   def handle_unverified_request
     Rails.env.production? ? reset_session : raise(ActionController::InvalidAuthenticityToken.new)
   end
+end
+
+class PagesController < ApplicationController
 end
