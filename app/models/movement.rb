@@ -151,7 +151,7 @@ class Movement < ActiveRecord::Base
     return {} unless image_settings
     [:image_height, :image_width, :image_dpi].inject({}){|r, k| r.merge(k => image_settings["#{setting_module}_#{k}"])}
   end
-
+  
   private
 
   def default_candidate(language_id)
