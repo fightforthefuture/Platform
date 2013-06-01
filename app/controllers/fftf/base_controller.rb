@@ -1,4 +1,4 @@
-class Fftf::BaseController < ApplicationController
+class Fftf::BaseController < ActionController::Base
   
   #before_filter :api_authenticate
   
