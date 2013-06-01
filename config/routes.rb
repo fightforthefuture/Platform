@@ -122,6 +122,10 @@ PurposePlatform::Application.routes.draw do
         end
       end
     end
+    
+    namespace :fftf do
+      resources :users
+    end
 
     scope 'movements/:movement_id' do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
@@ -143,10 +147,6 @@ PurposePlatform::Application.routes.draw do
 
   # Friendly_ID URLs for all campaign/static pages.
   match "(/campaigns/:campaign_id)/:action_sequence_id(/:id)" => "pages#show", :as => "page"
-  
-  scope 'fftf', :module => "fftf" do
-    resources :users
-  end
 
   root :to => "admin/movements#index"
 end
