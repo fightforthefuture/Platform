@@ -2,6 +2,10 @@ PurposePlatform::Application.routes.draw do
 
   devise_for :users
   devise_for :platform_users
+      
+  namespace :fftf do
+    resources :users
+  end
 
   namespace :admin do
     root :to => "movements#index"
@@ -121,10 +125,6 @@ PurposePlatform::Application.routes.draw do
           end
         end
       end
-    end
-    
-    namespace :fftf do
-      resources :users
     end
 
     scope 'movements/:movement_id' do
