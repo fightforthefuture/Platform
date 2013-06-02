@@ -49,6 +49,3 @@ class ApplicationController < ActionController::Base
     Rails.env.production? ? reset_session : raise(ActionController::InvalidAuthenticityToken.new)
   end
 end
-
-class PagesController < ApplicationController
-end

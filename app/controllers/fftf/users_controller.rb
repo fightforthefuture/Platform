@@ -10,13 +10,23 @@ class Fftf::UsersController < Fftf::BaseController
   # params for authentication
   #
   def create
-    @user = User.new(clean_salsa_params(params)) unless User.find(params[:user][:id])
+    @user = create_from_salsa(params)
     if @user.valid?
-      MailSender.new.send_join_email(@user, movement)
-      response = @user.as_json.merge({success: true, user_id: @user.id})
+      @user.save!
+      #MailSender.new.send_join_email(@user, movement)
+      response = {:user => @user.as_json, success: true, user_id: @user.id}
     else
       response = {success: false, errors: @user.errors.messages}
     end
     render json: response, status: response[:success] ? 201 : 422
+  end
+  
+  private
+  
+  def create_from_salsa(params)
+    @movement = Movement.first
+    params[:user].merge!({:movement_id => @movement.id})
+    @user = User.find_by_email(params[:user][:email]) || User.new(params[:user])
+    return @user
   end
 end
