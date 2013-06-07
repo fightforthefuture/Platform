@@ -27,6 +27,12 @@ class Fftf::UsersController < Fftf::BaseController
     @movement = Movement.first
     params[:user].merge!({:movement_id => @movement.id})
     @user = User.find_by_email(params[:user][:email]) || User.new(params[:user])
+    associate_user_with_page(@user, params[:tag])
     return @user
+  end
+  
+  def associate_user_with_page(@user, tag)
+    page = Movement.first.pages.find_or_create_by_name(tag)
+    UserActivityEvent.subscribed!(@user, @user.email, page)
   end
 end
