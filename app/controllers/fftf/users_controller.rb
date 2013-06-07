@@ -10,10 +10,12 @@ class Fftf::UsersController < Fftf::BaseController
   # params for authentication
   #
   def create
+    page_name = params[:user].delete(:tag).first
     @user = create_from_salsa(params)
     if @user.valid?
       @user.save!
-      #MailSender.new.send_join_email(@user, movement)
+      associate_user_with_page(@user, page_name)
+      #MailSender.new.send_join_email(@user, movement)      
       response = {:user => @user.as_json, success: true, user_id: @user.id}
     else
       response = {success: false, errors: @user.errors.messages}
@@ -26,13 +28,20 @@ class Fftf::UsersController < Fftf::BaseController
   def create_from_salsa(params)
     @movement = Movement.first
     params[:user].merge!({:movement_id => @movement.id})
-    @user = User.find_by_email(params[:user][:email]) || User.new(params[:user])
-    associate_user_with_page(@user, params[:tag])
+    
+    user_hash = {}
+    params[:user].each_pair do |k,v|
+      user_hash.merge!({k.downcase.to_sym => v}) 
+    end
+    
+    user_hash[:email] = user_hash[:email].first
+
+    @user = User.find_by_email(user_hash[:email].first) || User.new(user_hash)
     return @user
   end
   
-  def associate_user_with_page(@user, tag)
-    page = Movement.first.pages.find_or_create_by_name(tag)
-    UserActivityEvent.subscribed!(@user, @user.email, page)
+  def associate_user_with_page(user, name)
+    page = Movement.first.pages.find_or_create_by_name(name)
+    UserActivityEvent.subscribed!(user, nil, page)
   end
 end
