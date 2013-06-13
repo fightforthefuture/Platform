@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
-ruby '1.9.3'
+ruby '2.0.0'
 
 gem 'rails', '3.2.13'
 gem 'heroku'
@@ -8,7 +8,7 @@ gem 'haml'
 #gem 'sprockets', '~>2.1.2'
 gem 'uuid'
 
-#gem 'json', '>= 1.7.7'
+gem 'json', '~> 1.7.7'
 
 gem 'yui-compressor', :git => "git://github.com/oleander/ruby-yui-compressor.git", :require  => "yui/compressor"
 gem 'will_paginate' #, '~>3.0.3'
@@ -59,7 +59,6 @@ gem 'foreigner'
 gem 'roo'
 gem 'recurly'
 gem 'font-awesome-rails'
-gem 'json', '1.6.8'
 gem 'rack-timeout'
 
 
@@ -69,7 +68,7 @@ end
 
 group :development do
   gem 'therubyracer'
-  gem 'debugger'
+  gem 'debugger', '>= 1.4.0'
   # gem 'bullet'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -90,13 +89,12 @@ group :development, :test do
   gem 'jslint_on_rails'
   gem 'rspec-rails' #, '~> 2.8.1'
   gem 'guard-rspec' #, '~> 0.7.0'
-  #gem 'thin'
   gem 'launchy'
   gem 'selenium-webdriver' #, "~> 2.27.2"
-  gem 'capybara', '1.1.2'
+  gem 'capybara'#, '1.1.2'
   gem 'database_cleaner' #, "~> 0.7.1"
-  gem 'cucumber-rails', '1.2.0', :require => false
-  gem 'cucumber', '1.1.2'
+  gem 'cucumber-rails', :require => false #'1.2.0', 
+  gem 'cucumber'#, '1.1.2'
   gem 'launchy'
   gem 'factory_girl_rails', "~> 4.2.0"
   gem 'email_spec'
@@ -116,5 +114,4 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'quiet_assets'
   gem 'subcontractor'
-  gem 'fakeweb', :require => false
 end
