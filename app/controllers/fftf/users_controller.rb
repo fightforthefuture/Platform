@@ -16,7 +16,7 @@ class Fftf::UsersController < Fftf::BaseController
     @user = create_from_salsa(params)
     if @user.valid?
       @user.save!
-      if !page_name.empty?
+      if !page_name.nil?
         associate_user_with_page(@user, page_name)
       end
       #MailSender.new.send_join_email(@user, movement)      
