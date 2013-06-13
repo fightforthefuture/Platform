@@ -10,11 +10,15 @@ class Fftf::UsersController < Fftf::BaseController
   # params for authentication
   #
   def create
-    page_name = params[:user].delete(:tag).first
+    if params[:user].has_key? :tag
+      page_name = params[:user].delete(:tag).first
+    end
     @user = create_from_salsa(params)
     if @user.valid?
       @user.save!
-      associate_user_with_page(@user, page_name)
+      if !page_name.empty?
+        associate_user_with_page(@user, page_name)
+      end
       #MailSender.new.send_join_email(@user, movement)      
       response = {:user => @user.as_json, success: true, user_id: @user.id}
     else
