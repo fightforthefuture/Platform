@@ -12,13 +12,13 @@ class Fftf::UsersController < Fftf::BaseController
   def create
     if params[:user].has_key? :tag
       page_name = params[:user].delete(:tag).first
+    else
+      page_name = nil
     end
     @user = create_from_salsa(params)
     if @user.valid?
       @user.save!
-      if !page_name.nil?
-        associate_user_with_page(@user, page_name)
-      end
+      associate_user_with_page(@user, page_name)
       #MailSender.new.send_join_email(@user, movement)      
       response = {:user => @user.as_json, success: true, user_id: @user.id}
     else
@@ -44,8 +44,14 @@ class Fftf::UsersController < Fftf::BaseController
     return @user
   end
   
-  def associate_user_with_page(user, name)
-    page = Movement.first.pages.find_or_create_by_name(name)
-    UserActivityEvent.subscribed!(user, nil, page)
+  def associate_user_with_page(user, name=nil)
+    if !name.nil?
+      page = Movement.first.pages.find_or_create_by_name(name)
+      user_activity_event = UserActivityEvent.subscribed!(user, nil, page)
+    else
+      user_activity_event = UserActivityEvent.create(:user => user)
+    end
+    user_activity_event.campaign = Campaign.first
+    user_activity_event.save!
   end
 end
