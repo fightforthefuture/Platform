@@ -10,7 +10,11 @@ class Fftf::UsersController < Fftf::BaseController
   # params for authentication
   #
   def create
-    page_name = params[:user].delete(:tag).first
+    if params[:user].has_key? :tag
+      page_name = params[:user].delete(:tag).first
+    else
+      page_name = nil
+    end
     @user = create_from_salsa(params)
     if @user.valid?
       @user.save!
@@ -40,8 +44,14 @@ class Fftf::UsersController < Fftf::BaseController
     return @user
   end
   
-  def associate_user_with_page(user, name)
-    page = Movement.first.pages.find_or_create_by_name(name)
-    UserActivityEvent.subscribed!(user, nil, page)
+  def associate_user_with_page(user, name=nil)
+    if !name.nil?
+      page = Movement.first.pages.find_or_create_by_name(name)
+      user_activity_event = UserActivityEvent.subscribed!(user, nil, page)
+    else
+      user_activity_event = UserActivityEvent.create(:user => user)
+    end
+    user_activity_event.campaign = Campaign.first
+    user_activity_event.save!
   end
 end
