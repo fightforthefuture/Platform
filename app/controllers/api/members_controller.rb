@@ -14,14 +14,20 @@ class Api::MembersController < Api::BaseController
   end
 
   def create
-    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank? 
+    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
+    
+    if params[:salsa] == true
+      language = Language.find_by_iso_code(params[:language])
+      
+      User.create(params[:member].merge({'language_id' => language.id}))
+    end
 
     @member = movement.members.find_or_initialize_by_email(params[:member][:email])
     @member.language = Language.find_by_iso_code(params[:member][:language])
     if @member.valid?
       @member.join_email_sent = true
       @member.subscribe_through_homepage!(identify_email)
-      MailSender.new.send_join_email(@member, movement)
+      MailSender.new.send_join_zemail(@member, movement)
 
       response = @member.as_json(:only => MEMBER_FIELDS).merge({
         :next_page_identifier => join_page_slug,
