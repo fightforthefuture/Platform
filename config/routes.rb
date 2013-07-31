@@ -132,6 +132,7 @@ PurposePlatform::Application.routes.draw do
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
 
       resources :members, :only => [:create]
+      post 'salsa', to: 'members#create_from_salsa'
       get 'members' => 'members#show'
       resources :shares, :only => [:create]
 

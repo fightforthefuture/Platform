@@ -52,6 +52,7 @@ class ActionPage < Page
 
   attr_accessor :seeded_module
   attr_accessible :seeded_module, :name, :action_sequence, :position, :required_user_details, :no_wrappers, :movement_id, :crowdring_campaign_name
+  attr_accessible :type, :action_sequence_id
 
   DEFAULT_REQUIRED_USER_DETAILS = [
       {:field => "first_name", :default => "required", :label => "First Name"},

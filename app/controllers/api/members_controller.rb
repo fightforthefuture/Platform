@@ -2,6 +2,13 @@ class Api::MembersController < Api::BaseController
   MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]
   respond_to :json
 
+  after_filter :set_access_control_headers, :only => :create_from_salsa
+
+  def set_access_control_headers 
+    headers['Access-Control-Allow-Origin'] = '*' 
+    headers['Access-Control-Request-Method'] = '*' 
+  end
+
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
 
@@ -12,22 +19,42 @@ class Api::MembersController < Api::BaseController
       render :nothing => true, :status => status_response
     end
   end
+  
+  def create_from_salsa
+    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
+    
+    tag = params[:tag] || 'untagged'
+
+    unless @page = ActionPage.find_by_name(tag)
+      campaign = Campaign.find_by_name('CMS')
+      
+      @page = ActionPage.create(
+        name: tag,
+        movement_id: 1,
+        type: 'ActionPage',
+        action_sequence_id: campaign.action_sequences.first.id
+      )
+    end
+    
+    member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
+    
+    member_scope = User.for_movement(movement).where(:email => params[:member][:email])
+    member = member_scope.first || member_scope.build
+    
+    member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
+    
+    render nothing: true
+  end
 
   def create
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
-    
-    if params[:salsa] == true
-      language = Language.find_by_iso_code(params[:language])
-      
-      User.create(params[:member].merge({'language_id' => language.id}))
-    end
 
     @member = movement.members.find_or_initialize_by_email(params[:member][:email])
     @member.language = Language.find_by_iso_code(params[:member][:language])
     if @member.valid?
       @member.join_email_sent = true
       @member.subscribe_through_homepage!(identify_email)
-      MailSender.new.send_join_zemail(@member, movement)
+      MailSender.new.send_join_email(@member, movement)
 
       response = @member.as_json(:only => MEMBER_FIELDS).merge({
         :next_page_identifier => join_page_slug,
