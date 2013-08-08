@@ -41,7 +41,7 @@ class Api::MembersController < Api::BaseController
     member_scope = User.for_movement(movement).where(:email => params[:member][:email])
     member = member_scope.first || member_scope.build
     
-    member.take_action_on!(@page, { :email => params[:member][:email] }, member_params)
+    member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
     
     puts member.inspect
     
