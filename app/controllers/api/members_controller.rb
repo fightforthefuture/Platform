@@ -43,9 +43,7 @@ class Api::MembersController < Api::BaseController
     
     member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
     
-    puts member.inspect
-    
-    render json: params[:member][:email], status: 200
+    render nothing: true
   end
 
   def create
