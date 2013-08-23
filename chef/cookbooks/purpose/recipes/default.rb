@@ -23,24 +23,28 @@ package "libxslt-dev"
 package "libmagick9-dev"
 
 
-# Update Ruby to 1.9.3
-package "python-software-properties"
-bash "update_ruby" do
-  code <<-EOH
-  apt-add-repository ppa:brightbox/ruby-ng
-  apt-get update
-  EOH
+# Update Ruby to 2.0. It's not in Debian at this point in time, so we
+# install from source
+package "checkinstall"
+ruby_block "update_ruby" do
+  block do
+    require 'fileutils'
+    # Unless Ruby 2 is already installed, install it
+    unless `dpkg -s ruby-2.0.0` =~ /Status: install ok/
+      FileUtils.cd '/tmp'
+      puts "Downloading ruby-2.0.0-p195"
+      `wget -q -c http://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p195.tar.gz`
+      puts "Extracting ruby-2.0.0-p195"
+      `tar zxvf ruby-2.0.0-p195.tar.gz`
+      puts "Compiling ruby-2.0.0-p195"
+      FileUtils.cd 'ruby-2.0.0-p195'
+      `./configure`
+      `make`
+      puts "Installing ruby-2.0.0-p195"
+      `sudo checkinstall -y --pkgversion 2.0.0-p195 --provides "ruby-interpreter"`
+    end
+  end
 end
-package "ruby"
-package "rubygems"
-package "ruby-switch"
-package "ruby1.9.3"
-bash "switch_default_ruby" do
-  code <<-EOH
-  ruby-switch --set ruby1.9.1
-  EOH
-end
-
 
 # Create directory for platform code
 # Currently redundant. Keep around for later use.

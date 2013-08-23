@@ -6,11 +6,11 @@ class Mail::Message
 end
 
 ActionMailer::Base.smtp_settings = {  
-  :address        => "smtp.sendgrid.com",
+  :address        => "smtp.sendgrid.net",
   :domain         => "platform.yourname.com",
   :port           => 25,
   :user_name      => ENV["SENDGRID_USERNAME"],
   :password       => ENV["SENDGRID_PASSWORD"],
   :authentication => :plain,
-  :enable_starttls_auto => false
+  :enable_starttls_auto => true
 }

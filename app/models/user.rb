@@ -43,6 +43,7 @@
 
 class User < ActiveRecord::Base
   include CacheableModel
+  include HasApiToken
   acts_as_paranoid
   acts_as_user_stampable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable

@@ -1,0 +1,2 @@
+module Fftf::FftfHelper
+end
