@@ -84,7 +84,6 @@ describe UserActivityEvent do
   end
 
   describe 'action_taken' do
-
     context 'page is present' do
       it "creates an action_taken event, using the page's movement" do
         event = UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
@@ -98,6 +97,17 @@ describe UserActivityEvent do
         event.campaign.should == @page.action_sequence.campaign
         event.public_stream_html.should == "Someone signed!"
         event.movement.should == @page.movement
+      end
+
+      it "should allow multiple identical action taken events" do
+        UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
+        UserActivityEvent.action_taken!(@user, @page, @petition_module, @signature, @email)
+
+        UserActivityEvent.where(:user_id           => @user.id,
+                                :page_id           => @page.id,
+                                :content_module_id => @petition_module.id,
+                                :user_response_id  => @signature.id,
+                                :email_id          => @email.id).count.should == 2
       end
     end
 
@@ -116,24 +126,15 @@ describe UserActivityEvent do
         event.movement.should == @user.movement
       end
     end
-
   end
 
   describe 'email clicked event' do
     it "creates an email clicked event and an email viewed event" do
       @email = FactoryGirl.create(:email)
       push = @email.blast.push
-      event = UserActivityEvent.email_clicked!(@user, @email, @page)
-      event.activity.should == :email_clicked
-      event.user.should == @user
-      event.email.should == @email
-      event.page.should == @page
-      event.action_sequence.should == @page.action_sequence
+      UserActivityEvent.email_clicked!(@user, @email, @page)
 
       push.count_by_activity(:email_clicked).should eql 1
-
-      UserActivityEvent.where(:activity => UserActivityEvent::Activity::EMAIL_VIEWED,
-        :email_id => @email.id, :user_id => @user).count.should == 1
       push.count_by_activity(:email_viewed).should eql 1
     end
   end
@@ -142,10 +143,8 @@ describe UserActivityEvent do
     it 'creates an email spammed event' do
       @email = FactoryGirl.create(:email)
       push = @email.blast.push
-      event = UserActivityEvent.email_spammed!(@user, @email)
-      event.activity.should == :email_spammed
-      event.user.should == @user
-      event.email.should == @email
+      UserActivityEvent.email_spammed!(@user, @email)
+
       push.count_by_activity(:email_spammed).should eql 1
     end
   end
@@ -153,35 +152,9 @@ describe UserActivityEvent do
   it "creates an email viewed event" do
     @email = FactoryGirl.create(:email)
     push = @email.blast.push
-    event = UserActivityEvent.email_viewed!(@user, @email)
-    event.activity.should == :email_viewed
-    event.user.should == @user
-    event.email.should == @email
-
-    push.count_by_activity(:email_viewed).should eql 1
-  end
-
-  it "should not allow creating two email viewed events for the same user/email pair" do
-    @email = FactoryGirl.create(:email)
     UserActivityEvent.email_viewed!(@user, @email)
 
-    uae = UserActivityEvent.new(:activity => UserActivityEvent::Activity::EMAIL_VIEWED,
-        :email => @email,
-        :user => @user)
-    uae.valid?.should be_false
-    uae.errors_on(:activity).should == ["has already been taken"]
-  end
-
-  describe "email_viewed!" do
-    it "called twice for the same user/email pair does not try to create multiple email viewed events" do
-      @email = FactoryGirl.create(:email)
-      UserActivityEvent.email_viewed!(@user, @email)
-      UserActivityEvent.email_viewed!(@user, @email)
-
-      UserActivityEvent.where(:activity => UserActivityEvent::Activity::EMAIL_VIEWED,
-        :email_id => @email.id,
-        :user_id => @user.id).count.should eql 1
-    end
+    push.count_by_activity(:email_viewed).should eql 1
   end
 
   describe "comment filter" do

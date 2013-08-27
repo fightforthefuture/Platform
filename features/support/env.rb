@@ -12,8 +12,8 @@ require 'cucumber/rails'
 # Capybara.default_selector = :xpath
 
 # By default, any exception happening in your Rails application will bubble up
-# to Cucumber so that your scenario will fail. This is a different from how 
-# your application behaves in the production environment, where an error page will 
+# to Cucumber so that your scenario will fail. This is a different from how
+# your application behaves in the production environment, where an error page will
 # be rendered instead.
 #
 # Sometimes we want to override this default behaviour and allow Rails to rescue
@@ -28,15 +28,18 @@ require 'cucumber/rails'
 #
 ActionController::Base.allow_rescue = false
 
-Capybara.server_port = 5002
-Capybara.app_host = "http://localhost:#{Capybara.server_port}"
+#Capybara.server_port = 5002
+#Capybara.app_host = "http://localhost:#{Capybara.server_port}"
 Capybara.default_wait_time = 150
 
+
+=begin
 Capybara.register_driver :selenium do |app|
   http_client = Selenium::WebDriver::Remote::Http::Default.new
   http_client.timeout = 300
   Capybara::Selenium::Driver.new(app, :browser => :firefox, :http_client => http_client)
 end
+=end
 
 Capybara.default_driver = :selenium
 ActionController::Base.asset_host = Capybara.app_host
@@ -72,7 +75,6 @@ Cucumber::Rails::Database.javascript_strategy = :truncation
 
 Before do
   ENV['WHITELISTED_EMAIL_TEST_DOMAINS']='thoughtworks.com,purpose.com,purpose.org,allout.org'
-  ENV['JOIN_EMAIL_TO']='test@purpose.com'
 end
 
 Before('@without_transactional_fixtures') do |scenario|
