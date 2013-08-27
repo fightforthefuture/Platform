@@ -25,6 +25,8 @@ class Api::MembersController < Api::BaseController
     
     tag = params[:tag] || 'untagged'
 
+    movement = Movement.find(1)
+
     unless @page = ActionPage.find_by_name(tag)
       campaign = Campaign.find_by_name('CMS')
       
@@ -42,6 +44,11 @@ class Api::MembersController < Api::BaseController
     member = member_scope.first || member_scope.build
     
     member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
+
+    begin
+      MailSender.new.send_join_email(member, movement)
+    rescue
+    end
     
     render nothing: true
   end
