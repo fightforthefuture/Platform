@@ -81,7 +81,8 @@ class Api::MembersController < Api::BaseController
     ips = [
       '10.0.2.2',
       '64.99.80.30',
-      '107.21.97.136'
+      '107.21.97.136',
+      '76.26.200.184'
     ]
 
     logger.info "Received request from #{request.remote_ip}"
