@@ -2,12 +2,8 @@ class Api::MembersController < Api::BaseController
   MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]
   respond_to :json
 
+  before_filter :verify_request, :only => :create_from_salsa
   after_filter :set_access_control_headers, :only => :create_from_salsa
-
-  def set_access_control_headers 
-    headers['Access-Control-Allow-Origin'] = '*' 
-    headers['Access-Control-Request-Method'] = '*' 
-  end
 
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
@@ -46,7 +42,8 @@ class Api::MembersController < Api::BaseController
     member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
 
     begin
-      MailSender.new.send_join_email(member, movement)
+      join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
+      SendgridMailer.delay.user_email(join_email, member)
     rescue
     end
     
@@ -79,6 +76,20 @@ class Api::MembersController < Api::BaseController
   end
 
   private
+
+  def verify_request
+    ips = [
+      '10.0.2.2',
+      '64.99.80.30'
+    ]
+
+    raise ActionController::RoutingError.new('Not Found') and return unless ips.include?(request.remote_ip)
+  end
+
+  def set_access_control_headers 
+    headers['Access-Control-Allow-Origin'] = '*' 
+    headers['Access-Control-Request-Method'] = '*' 
+  end
 
   def join_page_slug
     movement.find_page('join').try(:slug)
