@@ -80,8 +80,11 @@ class Api::MembersController < Api::BaseController
   def verify_request
     ips = [
       '10.0.2.2',
-      '64.99.80.30'
+      '64.99.80.30',
+      '107.21.97.136'
     ]
+
+    logger.info "Received request from #{request.remote_ip}"
 
     raise ActionController::RoutingError.new('Not Found') and return unless ips.include?(request.remote_ip)
   end
