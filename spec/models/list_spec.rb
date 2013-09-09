@@ -31,7 +31,7 @@ describe List do
   }
 
   let(:default_relation) { User.where(:is_member => true).where(:movement_id => movement.id) }
-
+  
   it "should return users whose email belong to gmail" do
     user = create(:user, :email => "foo@borges.com", :movement => movement, :language => movement.default_language)
     activity = create(:activity, :user => user)

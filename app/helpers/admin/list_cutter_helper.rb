@@ -3,17 +3,20 @@ module Admin::ListCutterHelper
     [
         {label: "Country", class: ListCutter::CountryRule},
         {label: "Zone", class: ListCutter::ZoneRule},
+        {label: "Distance from Point", class: ListCutter::DistanceFromPointRule},
+        {label: "Distance from Postcode", class: ListCutter::DistanceFromPostcodeRule},
+        {label: "Postcode", class: ListCutter::PostcodeRule},
         {label: "Domain", class: ListCutter::EmailDomainRule},
         {label: "Campaigns", class: ListCutter::CampaignRule},
         {label: "Action Page", class: ListCutter::ActionTakenRule},
-        {label: "Email status", class: ListCutter::EmailActionRule},
+        {label: "Email Status", class: ListCutter::EmailActionRule},
         {label: "Join Date", class: ListCutter::JoinDateRule},
         {label: "Member Activity", class: ListCutter::MemberActivityRule},
         {label: "Source", class: ListCutter::MemberSourceRule},
         {label: "Originating Action", class: ListCutter::OriginatingActionRule},
         {label: "Member Email Activity", class: ListCutter::MemberEmailActivityRule},
-        {label: "Donation frequency", class: ListCutter::DonorRule},
-        {label: "Donation amount", class: ListCutter::DonationAmountRule},
+        {label: "Donation Frequency", class: ListCutter::DonorRule},
+        {label: "Donation Amount", class: ListCutter::DonationAmountRule},
         {label: "External Action", class: ListCutter::ExternalActionRule},
         {label: "External Tag", class: ListCutter::ExternalTagRule}
     ]
@@ -98,6 +101,17 @@ module Admin::ListCutterHelper
     UserActivityEvent::Activity.constants.map do |activity_type|
       [activity_type, UserActivityEvent::Activity.const_get(activity_type)]
     end
+  end
+
+  def geo_data_country_options
+    options_for_select(GeoData.group(:country_iso).map{|gd| [gd.country_name, gd.country_iso]})
+  end
+
+  def google_maps_js
+    maps_js_url = AppConstants.google_api_key.blank? ? AppConstants.google_maps_js_url :
+                                                       AppConstants.keyed_google_maps_js_url
+
+    javascript_include_tag maps_js_url
   end
 
   private

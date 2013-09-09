@@ -14,7 +14,7 @@ describe 'SendgridMailer' do
     email_to_send.save!
     email_to_send
   end
-
+    
   context 'individual email' do
     it 'should not be sent to permanently unsubscribed members' do
       user = create(:user, :email => 'bob@thoughtworks.com')

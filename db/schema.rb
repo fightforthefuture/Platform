@@ -273,13 +273,26 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
     t.integer  "position"
   end
 
+  create_table "geo_data", :force => true do |t|
+    t.string   "country_iso"
+    t.string   "postcode",    :null => false
+    t.string   "city"
+    t.string   "lat",         :null => false
+    t.string   "lng",         :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "geo_data", ["country_iso", "postcode"], :name => "index_geo_data_on_country_iso_and_postcode"
+  add_index "geo_data", ["postcode"], :name => "index_postcodes_on_zip", :unique => true
+
   create_table "homepage_contents", :force => true do |t|
     t.string   "banner_image"
     t.string   "banner_text"
     t.datetime "updated_at"
     t.string   "updated_by"
-    t.string   "join_headline"
-    t.string   "join_message"
+    t.text     "join_headline"
+    t.text     "join_message"
     t.text     "follow_links"
     t.text     "header_navbar"
     t.text     "footer_navbar"
@@ -644,8 +657,13 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
     t.string   "source"
     t.boolean  "permanently_unsubscribed"
     t.string   "state",                    :limit => 64
+<<<<<<< HEAD
     t.string   "ip_address"
     t.string   "user_agent"
+=======
+    t.string   "lat"
+    t.string   "lng"
+>>>>>>> develop
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
@@ -655,6 +673,7 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
   add_index "users", ["movement_id", "language_id"], :name => "index_users_on_movement_id_and_language_id"
   add_index "users", ["movement_id", "source", "deleted_at"], :name => "index_users_on_movement_id_and_source_and_deleted_at"
   add_index "users", ["name_safe"], :name => "index_users_on_name_safe"
+  add_index "users", ["postcode"], :name => "index_users_on_postcode"
   add_index "users", ["random"], :name => "users_random_idx"
 
   add_foreign_key "content_modules", "content_modules", :name => "live_content_module_id_fk", :column => "live_content_module_id"
