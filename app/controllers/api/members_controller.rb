@@ -18,6 +18,7 @@ class Api::MembersController < Api::BaseController
   
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
+    (render :json => { :errors => "There was a problem processing your request"}, :status => 422 and return) unless params[:guard].blank?
     
     tag = params[:tag] || 'untagged'
 
