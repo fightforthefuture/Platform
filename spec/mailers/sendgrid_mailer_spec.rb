@@ -24,7 +24,7 @@ describe SendgridMailer do
       :postcode => "10000", :country_iso => "us", :language => FactoryGirl.create(:english), :movement => movement)
 
     mailer = SendgridMailer.send(:new)
-    
+
     mailer.pre_process_body(email.body, user)[:text].should == """Dear Guybrush,
       This is the link: http://example.com/my_link"""
   end
@@ -71,7 +71,7 @@ describe SendgridMailer do
       mailer = SendgridMailer.send(:new)
       options = {:recipients => ['bob@generic.org']}
       returnEmail = mailer.blast_email(@email, options)
-      returnEmail.header['List-Unsubscribe'].value.should == "<mailto:Your Name <from@yourdomain.org>>"
+      returnEmail.header['List-Unsubscribe'].value.should == "<mailto:unsubscribe@list.fightforthefuture.org>"
     end
 
 

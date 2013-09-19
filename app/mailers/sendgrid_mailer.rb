@@ -30,7 +30,7 @@ class SendgridMailer < ActionMailer::Base
   def prepare(email, options)
     headers['X-SMTPAPI'] = prepare_sendgrid_headers(email, options)
     Rails.logger.info("X-SMTPAPI is #{headers['X-SMTPAPI']}")
-    headers['List-Unsubscribe' ] = "<mailto:#{email.from}>"
+    headers['List-Unsubscribe' ] = "<mailto:#{AppConstants.unsubscribe_email}>"
     subject = get_subject(email, options)
 
     mail(:to => AppConstants.no_reply_address, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
@@ -58,7 +58,7 @@ class SendgridMailer < ActionMailer::Base
   end
 
 
-protected  
+protected
 
   #TODO: #include SendGrid
   include SendgridTokenReplacement
@@ -114,7 +114,7 @@ protected
     end
   end
 
-  
+
 
 
 end

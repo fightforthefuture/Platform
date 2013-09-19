@@ -9,6 +9,7 @@ development: &default
   s3_bucket_uri: "//<%= ENV['S3_BUCKET_NAME'] %>.s3.amazonaws.com"
   enable_unfiltered_blasting: <%= ENV['ENABLE_UNFILTERED_BLASTING'] || false %>
   authenticate_api_calls: <%= ENV["AUTHENTICATE_API_CALLS"] || false %>
+  unsubscribe_email: <%= ENV['UNSUBSCRIBE_EMAIL'] || 'unsubscribe@list.fightforthefuture.org' %>
   readonly_database_url: <%= ENV["READONLY_DATABASE_URL"] %>
   no_reply_address: <%= ENV["NO_REPLY_ADDRESS"] || "noreply@yourdomain.com" %>
   google_api_key: <%= ENV["GOOGLE_API_KEY"] %>
