@@ -112,7 +112,7 @@ describe Email do
       email = build_email(:body => "awesome", :subject=>"stuff")
       email_double = double()
       SendgridMailer.stub(:blast_email) { email_double }
-      SendgridMailer.should_receive(:blast_email).with(email, :recipients => [ Email::DEFAULT_TEST_EMAIL_RECIPIENT ], :test => true)
+      SendgridMailer.should_receive(:blast_email).with(email, false, :recipients => [ Email::DEFAULT_TEST_EMAIL_RECIPIENT ], :test => true)
       email_double.should_receive(:deliver)
 
       email.test_sent_at.should be_nil
@@ -124,7 +124,7 @@ describe Email do
       email = build_email(:body => "awesome", :subject=>"stuff")
       email_double = double()
       SendgridMailer.stub(:blast_email) { email_double }
-      SendgridMailer.should_receive(:blast_email).with(email, :recipients => ['another_recipient@gmail.com', Email::DEFAULT_TEST_EMAIL_RECIPIENT], :test => true)
+      SendgridMailer.should_receive(:blast_email).with(email, false, :recipients => ['another_recipient@gmail.com', Email::DEFAULT_TEST_EMAIL_RECIPIENT], :test => true)
       email_double.should_receive(:deliver)
 
       email.send_test!(['another_recipient@gmail.com'])

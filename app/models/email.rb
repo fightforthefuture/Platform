@@ -53,7 +53,7 @@ class Email < ActiveRecord::Base
   def send_test!(recipients=[])
     recipients << DEFAULT_TEST_EMAIL_RECIPIENT
     self.touch(:test_sent_at)
-    SendgridMailer.blast_email(self, {:recipients => recipients, :test => true}).deliver
+    SendgridMailer.blast_email(self, false, {:recipients => recipients, :test => true}).deliver
   end
 
   def self.page_options(movement_id)
@@ -65,8 +65,8 @@ class Email < ActiveRecord::Base
   def html_body
     add_tracking_hash_to_html_links(self.body)
   end
-  
-  def sent_at    
+
+  def sent_at
     if sent && self[:sent_at].blank?
       self[:updated_at]
     else
@@ -97,15 +97,18 @@ class Email < ActiveRecord::Base
   def deliver_blast_in_batches(user_ids, batch_size=100)
     batch_size = 100 if batch_size > 100
 
+    batch_number = 0
     user_ids.each_slice(batch_size) do |slice|
       begin
         recipients = User.select(:email).where(:id => slice).order(:email).map(&:email)
-        SendgridMailer.blast_email(self, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
+        SendgridMailer.blast_email(self, batch_number, :recipients => recipients).deliver unless sendgrid_interation_is_disabled?
         EmailRecipientDetail.create_with(self, slice).save
-        self.push.batch_create_sent_activity_event!(slice, self)
+        self.push.batch_create_sent_activity_event!(slice, self, batch_number)
       rescue Exception => e
         self.update_attribute(:delayed_job_id, nil)
         PushLog.log_exception(self, slice, e)
+      ensure
+        batch_number += 1
       end
     end
   end

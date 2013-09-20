@@ -70,8 +70,8 @@ describe SendgridMailer do
     it 'should set list-unsubscribe header' do
       mailer = SendgridMailer.send(:new)
       options = {:recipients => ['bob@generic.org']}
-      returnEmail = mailer.blast_email(@email, options)
-      returnEmail.header['List-Unsubscribe'].value.should == "<mailto:unsubscribe@list.fightforthefuture.org>"
+      returnEmail = mailer.blast_email(@email, 1, options)
+      expect(returnEmail.header['List-Unsubscribe'].value).to match(ListUnsubscribe.valid_regex)
     end
 
 
@@ -94,7 +94,7 @@ describe SendgridMailer do
       ENV["PEANUTBUTTER_BLAST_EMAIL_DOMAIN"] = "yourdomain.org"
 
       options = {:recipients => ['bob@generic.org']}
-      email_settings = SendgridMailer.blast_email(@email, options).delivery_method.settings
+      email_settings = SendgridMailer.blast_email(@email, 1, options).delivery_method.settings
 
       email_settings[:user_name].should == "david@yourdomain.org"
       email_settings[:password].should == "password"

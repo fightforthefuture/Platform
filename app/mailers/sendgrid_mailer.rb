@@ -13,24 +13,26 @@ class SendgridMailer < ActionMailer::Base
     }
     options.merge!({:from => email.from}) if email.respond_to?(:from)
 
-    prepared_mail=prepare(email, options)
+    prepared_mail=prepare(email, false, options)
     prepared_mail.deliver
     prepared_mail
   end
 
-  def blast_email(email, options)
+  # @param email (Email)
+  # @param batch_number (Integer or false)
+  def blast_email(email, batch_number, options)
     @body_text = { :html => email.html_body, :text => email.plain_text_body }
     @footer = email.footer.present? ? { :html => email.footer.html_with_beacon, :text => email.footer.text } : {}
     options[:recipients] = clean_recipient_list(options[:recipients])
 
-    prepare(email, options)
+    prepare(email, batch_number, options)
   end
 
 
-  def prepare(email, options)
+  def prepare(email, batch_number, options)
     headers['X-SMTPAPI'] = prepare_sendgrid_headers(email, options)
     Rails.logger.info("X-SMTPAPI is #{headers['X-SMTPAPI']}")
-    headers['List-Unsubscribe' ] = "<mailto:#{AppConstants.unsubscribe_email}>"
+    headers['List-Unsubscribe' ] = prepare_unsubscribe_email_address(email, batch_number)
     subject = get_subject(email, options)
 
     mail(:to => AppConstants.no_reply_address, :from => email.from, :reply_to => (email.reply_to || email.from), :subject => subject) do |format|
@@ -67,9 +69,12 @@ protected
   include CountryHelper
   include EmailBodyConverter
 
-
-
-
+  # Faking an email is easy, which creates a security hole allowing
+  # malicious unsubscribes from Platform.  We attempt to prevent this
+  # by encoding the email address and movement in the email address
+  def prepare_unsubscribe_email_address(email, batch_number)
+    ListUnsubscribe.encode_unsubscribe_email_address(email, batch_number, email.movement)
+  end
 
 
   def prepare_sendgrid_headers(email_to_send, options)

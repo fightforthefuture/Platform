@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130909121034) do
+ActiveRecord::Schema.define(:version => 20130926133717) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -284,7 +284,6 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
   end
 
   add_index "geo_data", ["country_iso", "postcode"], :name => "index_geo_data_on_country_iso_and_postcode"
-  add_index "geo_data", ["postcode"], :name => "index_postcodes_on_zip", :unique => true
 
   create_table "homepage_contents", :force => true do |t|
     t.string   "banner_image"
@@ -444,7 +443,6 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
     t.string   "comment"
   end
 
-  add_index "petition_signatures", ["content_module_id"], :name => "idx_content_module"
   add_index "petition_signatures", ["page_id"], :name => "index_petition_signatures_on_page_id"
 
   create_table "platform_users", :force => true do |t|
@@ -483,16 +481,17 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
   add_index "push_clicked_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
 
   create_table "push_logs", :force => true do |t|
-    t.text     "message",    :limit => 2147483647
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.text     "message",    :limit => 16777215
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "push_sent_emails", :id => false, :force => true do |t|
-    t.integer  "movement_id", :null => false
-    t.integer  "user_id",     :null => false
-    t.integer  "push_id",     :null => false
-    t.integer  "email_id",    :null => false
+    t.integer  "movement_id",  :null => false
+    t.integer  "user_id",      :null => false
+    t.integer  "push_id",      :null => false
+    t.integer  "email_id",     :null => false
+    t.integer  "batch_number", :null => true
     t.datetime "created_at"
   end
 
@@ -531,8 +530,8 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
     t.integer  "campaign_id"
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "shares", :force => true do |t|
@@ -589,6 +588,7 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"
   add_index "user_activity_events", ["activity", "page_id"], :name => "activity"
+  add_index "user_activity_events", ["activity"], :name => "activities_activity_idx"
   add_index "user_activity_events", ["campaign_id", "activity"], :name => "uae_campaign_id_activity"
   add_index "user_activity_events", ["comment"], :name => "idx_uae_comment"
   add_index "user_activity_events", ["comment_safe"], :name => "index_user_activity_events_on_comment_safe"
@@ -657,17 +657,17 @@ ActiveRecord::Schema.define(:version => 20130909121034) do
     t.string   "source"
     t.boolean  "permanently_unsubscribed"
     t.string   "state",                    :limit => 64
-<<<<<<< HEAD
-    t.string   "ip_address"
-    t.string   "user_agent"
-=======
     t.string   "lat"
     t.string   "lng"
->>>>>>> develop
+    t.string   "ip_address"
+    t.string   "user_agent"
   end
 
   add_index "users", ["created_at"], :name => "created_at_idx"
+  add_index "users", ["deleted_at", "is_member"], :name => "member_status"
   add_index "users", ["deleted_at", "movement_id", "is_member"], :name => "index_users_on_deleted_at_and_movement_id_and_is_member"
+  add_index "users", ["deleted_at", "movement_id", "source"], :name => "index_users_on_deleted_at_and_movement_id_and_source"
+  add_index "users", ["deleted_at"], :name => "idx_deleted_at"
   add_index "users", ["email", "movement_id"], :name => "index_users_on_email_and_movement_id", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["movement_id", "language_id"], :name => "index_users_on_movement_id_and_language_id"

@@ -14,7 +14,7 @@ describe 'SendgridMailer' do
     email_to_send.save!
     email_to_send
   end
-    
+
   context 'individual email' do
     it 'should not be sent to permanently unsubscribed members' do
       user = create(:user, :email => 'bob@thoughtworks.com')
@@ -34,7 +34,7 @@ describe 'SendgridMailer' do
       donald_hash = Base64.urlsafe_encode64("userid=#{donald.id},emailid=#{email_to_send.id}")
       steve_hash = Base64.urlsafe_encode64("userid=#{steve.id},emailid=#{email_to_send.id}")
       AppConstants.stub(:enable_unfiltered_blasting) { true }
-      SendgridMailer.blast_email(email_to_send, :recipients => ['another@dude.com', 'leonardo@borges.com']).deliver
+      SendgridMailer.blast_email(email_to_send, 1, :recipients => ['another@dude.com', 'leonardo@borges.com']).deliver
 
       ActionMailer::Base.deliveries.size.should eql(1)
 
@@ -88,7 +88,7 @@ describe 'SendgridMailer' do
         FactoryGirl.create(:user, :email => email)
       end
 
-      SendgridMailer.blast_email(email_to_send, :recipients => recipients).deliver
+      SendgridMailer.blast_email(email_to_send, 1, :recipients => recipients).deliver
 
       ActionMailer::Base.deliveries.size.should eql(1)
 
@@ -101,7 +101,7 @@ describe 'SendgridMailer' do
       @delivered.header['X-SMTPAPI'].value.should_not match(/leonardo@gmail.com/)
 
       AppConstants.stub(:enable_unfiltered_blasting) { true }
-      SendgridMailer.blast_email(email_to_send, :recipients => ['leonardo@gmail.com',
+      SendgridMailer.blast_email(email_to_send, 1, :recipients => ['leonardo@gmail.com',
                                                                 'another@thoughtworks.com',
                                                                 'not-me@hotmail.com',
                                                                 'david@yourdomain.org']).deliver
@@ -118,7 +118,7 @@ describe 'SendgridMailer' do
     it "should prepend a test string to the email subject if in test mode" do
       donald_hash = Base64.urlsafe_encode64("userid=#{donald.id},emailid=#{email_to_send.id}")
 
-      SendgridMailer.blast_email(email_to_send, :recipients => ['leonardo@borges.com'], :test => true).deliver
+      SendgridMailer.blast_email(email_to_send, 1, :recipients => ['leonardo@borges.com'], :test => true).deliver
 
       ActionMailer::Base.deliveries.size.should eql(1)
 
@@ -127,7 +127,7 @@ describe 'SendgridMailer' do
     end
 
     it "should raise a RuntimeError if the size of the tokens array doesn't match the number of recipients" do
-      expect {SendgridMailer.blast_email(email_to_send, :recipients => ['leonardo@borges.com','dave@mustaine.com', 'james@hetfield.com']).deliver}.to raise_error(RuntimeError)
+      expect {SendgridMailer.blast_email(email_to_send, 1, :recipients => ['leonardo@borges.com','dave@mustaine.com', 'james@hetfield.com']).deliver}.to raise_error(RuntimeError)
     end
   end
 end

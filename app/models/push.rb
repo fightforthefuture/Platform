@@ -41,11 +41,11 @@ class Push < ActiveRecord::Base
   # This method resorts to raw SQL for performance reasons
   # Using ActiveRecord to create events for all sent emails clocked in 22 minutes for 450_000 users
   # This methods allowed the same amount of users to be inserted in 11 seconds
-  def batch_create_sent_activity_event!(user_ids, email, batch_size=10_000)
-    insert_sql = "INSERT INTO #{PushSentEmail.table_name} (movement_id, user_id, push_id, email_id, created_at) VALUES "
+  def batch_create_sent_activity_event!(user_ids, email, batch_number, batch_size=10_000)
+    insert_sql = "INSERT INTO #{PushSentEmail.table_name} (movement_id, user_id, push_id, email_id, batch_number, created_at) VALUES "
     user_ids.each_slice(batch_size) do |slice|
       values = slice.inject([]) do |acc, user_id|
-        acc << "(#{campaign.movement.id}, #{user_id}, #{self.id}, #{email.id}, UTC_TIMESTAMP())"
+        acc << "(#{campaign.movement.id}, #{user_id}, #{self.id}, #{email.id}, #{batch_number}, UTC_TIMESTAMP())"
         acc
       end
       sql = insert_sql + values.join(',')

@@ -2,7 +2,7 @@ PurposePlatform::Application.routes.draw do
 
   devise_for :users
   devise_for :platform_users
-      
+
   namespace :fftf do
     resources :users
   end
@@ -88,7 +88,7 @@ PurposePlatform::Application.routes.draw do
       end
 
       resources :users
-      
+
       resources :join_emails, :only => [:index]
       post "join_emails" => "join_emails#update"
       resources :email_footers, :only => [:index]
@@ -130,6 +130,7 @@ PurposePlatform::Application.routes.draw do
     scope 'movements/:movement_id' do
       get "awesomeness(.:format)" => "health_dashboard#index", :as => 'awesomeness_dashboard'
       post 'sendgrid_event_handler' => 'sendgrid#event_handler'
+      post 'sendgrid_unsubscribe_handler' => 'sendgrid#unsubscribe_handler'
 
       resources :members, :only => [:create]
       post 'salsa', to: 'members#create_from_salsa'

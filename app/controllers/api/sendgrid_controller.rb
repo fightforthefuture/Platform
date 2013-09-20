@@ -12,6 +12,18 @@ class Api::SendgridController < Api::BaseController
     head :ok
   end
 
+  def unsubscribe_handler
+    address = params[:to]
+    from_address = params[:from]
+
+    if ListUnsubscribe.valid_unsubscribe_email_address?(address, from_address, @movement)
+      member = User.find_by_movement_id_and_email(@movement.id, from_address)
+      member.unsubscribe!
+    end
+
+    head :ok
+  end
+
   def should_unsubscribe?
     hard_bounce? || spam?
   end
