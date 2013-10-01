@@ -27,7 +27,7 @@ describe ListUnsubscribe do
       email = create(:email)
 
       address = ListUnsubscribe.encode_unsubscribe_email_address(email, 1, movement)
-      address.should =~ /[a-z]*+#{email.id}_1_[a-f0-9]{32}@[a-z.]*/
+      address.should =~ /^[a-z]*\+#{email.id}_1_[a-f0-9]{32}@[a-z.]*$/
     end
   end
 

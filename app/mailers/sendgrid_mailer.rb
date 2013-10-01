@@ -73,7 +73,7 @@ protected
   # malicious unsubscribes from Platform.  We attempt to prevent this
   # by encoding the email address and movement in the email address
   def prepare_unsubscribe_email_address(email, batch_number)
-    ListUnsubscribe.encode_unsubscribe_email_address(email, batch_number, email.movement)
+    "<mailto:#{ListUnsubscribe.encode_unsubscribe_email_address(email, batch_number, email.movement)}>"
   end
 
 

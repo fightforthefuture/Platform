@@ -39,7 +39,7 @@ module ListUnsubscribe
     base, domain = AppConstants.unsubscribe_email.split("@")
     hash = unsubscribe_hash(email.id, batch_number, movement)
 
-    "#{base}+#{email.id}_#{batch_number}_#{hash}@#{domain}>"
+    "#{base}+#{email.id}_#{batch_number}_#{hash}@#{domain}"
   end
 
   # Checks if an email address is a valid address to send unsubscribes to.

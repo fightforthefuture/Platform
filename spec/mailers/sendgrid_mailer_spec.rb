@@ -71,7 +71,7 @@ describe SendgridMailer do
       mailer = SendgridMailer.send(:new)
       options = {:recipients => ['bob@generic.org']}
       returnEmail = mailer.blast_email(@email, 1, options)
-      expect(returnEmail.header['List-Unsubscribe'].value).to match(ListUnsubscribe.valid_regex)
+      expect(returnEmail.header['List-Unsubscribe'].value).to match(/<mailto:#{ListUnsubscribe.valid_regex}>/)
     end
 
 
