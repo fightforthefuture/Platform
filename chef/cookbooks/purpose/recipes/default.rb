@@ -22,7 +22,6 @@ package "libxslt-dev"
 # ImageMagick
 package "libmagick9-dev"
 
-
 # Update Ruby to 2.0. It's not in Debian at this point in time, so we
 # install from source
 package "checkinstall"
