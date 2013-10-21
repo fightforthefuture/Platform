@@ -101,7 +101,7 @@ class Email < ActiveRecord::Base
     user_ids.each_slice(batch_size) do |slice|
       begin
         recipients = User.select(:email).where(id: slice).order(:email).map(&:email)
-        SendgridMailer.blast_email(self, batch_number recipients: recipients).deliver unless sendgrid_interation_is_disabled?
+        SendgridMailer.blast_email(self, batch_number, recipients: recipients).deliver unless sendgrid_interation_is_disabled?
         EmailRecipientDetail.create_with(self, slice).save
         self.push.batch_create_sent_activity_event!(slice, self, batch_number)
       rescue Exception => e
