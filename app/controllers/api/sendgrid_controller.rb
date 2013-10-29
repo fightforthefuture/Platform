@@ -16,12 +16,18 @@ class Api::SendgridController < Api::BaseController
     address = params[:to]
     from_address = params[:from]
 
-    if ListUnsubscribe.valid_unsubscribe_email_address?(address, from_address, @movement)
-      member = User.find_by_movement_id_and_email(@movement.id, from_address)
-      member.unsubscribe!
-    end
+    Rails.logger.info "Processing unsubscribe to: #{address}, from: #{from_address}."
 
-    head :ok
+    begin
+      if address and from_address and ListUnsubscribe.valid_unsubscribe_email_address?(address, from_address, @movement)
+        member = User.find_by_movement_id_and_email(@movement.id, from_address)
+        if member
+          member.unsubscribe!
+        end
+      end
+    ensure
+      head :ok
+    end
   end
 
   def should_unsubscribe?

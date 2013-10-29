@@ -79,6 +79,11 @@ describe Api::SendgridController do
       expect(walkfree_member.is_member).to be_false
     end
 
+    it 'should not fail is to or from parameters are empty' do
+      post :unsubscribe_handler, movement_id: walkfree.id
+      expect(response.code).to eq('200')
+    end
+
     it 'should not unsubscribe given an invalid from address' do
       email = create(:email)
       pse = PushSentEmail.new(movement_id: walkfree.id, user_id: walkfree_member.id, push_id: email.push.id, email_id: email.id, batch_number: 1).save!
