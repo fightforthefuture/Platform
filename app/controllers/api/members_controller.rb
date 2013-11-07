@@ -46,12 +46,6 @@ class Api::MembersController < Api::BaseController
       join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
       SendgridMailer.delay.user_email(join_email, member)
     rescue
-      response = {
-        :errors => 'Email could not be sent'
-      }
-      status_response = 422
-      render :json => response, :status => status_response
-      return
     end
     
     render nothing: true
