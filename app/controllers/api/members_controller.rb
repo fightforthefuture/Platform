@@ -33,6 +33,16 @@ class Api::MembersController < Api::BaseController
         type: 'ActionPage',
         action_sequence_id: campaign.action_sequences.first.id
       )
+
+      petition = PetitionModule.create!(
+        :title => "Sign, please",
+        :content => 'We the undersigned...',
+        :petition_statement => "This is the petition statement",
+        :signatures_goal => 1,
+        :thermometer_threshold => 0,
+        :language => english
+      )
+      ContentModuleLink.create!(:page => @page, :content_module => petition, :position => 3, :layout_container => :main_content)
     end
     
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
