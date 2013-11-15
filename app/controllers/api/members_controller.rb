@@ -40,7 +40,7 @@ class Api::MembersController < Api::BaseController
         :petition_statement => "This is the petition statement",
         :signatures_goal => 1,
         :thermometer_threshold => 0,
-        :language => english
+        :language => Language.find_by_iso_code(:en)
       )
       ContentModuleLink.create!(:page => @page, :content_module => petition, :position => 3, :layout_container => :main_content)
     end
