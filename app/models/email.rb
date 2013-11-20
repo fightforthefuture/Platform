@@ -63,7 +63,11 @@ class Email < ActiveRecord::Base
   handle_asynchronously(:send_test!) unless Rails.env.test?
 
   def html_body
-    add_tracking_hash_to_html_links(self.body)
+    if ENV['ENABLE_EMAIL_LINK_TRACKING']
+      add_tracking_hash_to_html_links(self.body)
+    else
+      self.body
+    end
   end
 
   def sent_at
