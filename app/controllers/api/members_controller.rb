@@ -2,7 +2,7 @@ class Api::MembersController < Api::BaseController
   MEMBER_FIELDS = [:id, :first_name, :last_name, :email, :country_iso, :postcode, :home_number, :mobile_number, :street_address, :suburb]
   respond_to :json
 
-  before_filter :verify_request, :only => :create_from_salsa
+  # before_filter :verify_request, :only => :create_from_salsa
   after_filter :set_access_control_headers, :only => :create_from_salsa
 
   def show
@@ -33,6 +33,16 @@ class Api::MembersController < Api::BaseController
         type: 'ActionPage',
         action_sequence_id: campaign.action_sequences.first.id
       )
+
+      petition = PetitionModule.create!(
+        :title => "Sign, please",
+        :content => 'We the undersigned...',
+        :petition_statement => "This is the petition statement",
+        :signatures_goal => 1,
+        :thermometer_threshold => 0,
+        :language => Language.find_by_iso_code(:en)
+      )
+      ContentModuleLink.create!(:page => @page, :content_module => petition, :position => 3, :layout_container => :main_content)
     end
     
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
@@ -83,7 +93,8 @@ class Api::MembersController < Api::BaseController
       '10.0.2.2',
       '64.99.80.30',
       '107.21.97.136',
-      '76.26.200.184'
+      '76.26.200.184',
+      '98.210.155.83'
     ]
 
     logger.info "Received request from #{request.remote_ip}"

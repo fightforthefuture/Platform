@@ -144,7 +144,8 @@ class ActionPage < Page
   end
 
   def subscribes_user?
-    self.has_an_ask? and ask_module.subscribes_user_on_action?
+    true
+    # self.has_an_ask? and ask_module.subscribes_user_on_action?
   end
 
   def has_counter?
