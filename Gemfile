@@ -55,7 +55,7 @@ gem 'foreigner'
 gem 'roo'
 gem 'recurly'
 gem 'font-awesome-rails'
-gem 'rack-timeout'
+# gem 'rack-timeout'
 gem 'strong_parameters'
 gem 'devise-encryptable'
 
