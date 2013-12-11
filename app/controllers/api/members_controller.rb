@@ -15,6 +15,14 @@ class Api::MembersController < Api::BaseController
       render :nothing => true, :status => status_response
     end
   end
+
+  def unsubscribe
+    movement = Movement.find(1)
+    user = User.for_movement(movement).where(:email => params[:member][:email]).first
+    user.unsubscribe!
+
+    render text: 'We are sad to see you go.'
+  end
   
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?

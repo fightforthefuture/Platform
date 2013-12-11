@@ -134,6 +134,7 @@ PurposePlatform::Application.routes.draw do
 
       resources :members, :only => [:create]
       post 'salsa', to: 'members#create_from_salsa'
+      post 'unsubscribe', to: 'members#unsubscribe'
       get 'members' => 'members#show'
       resources :shares, :only => [:create]
 
