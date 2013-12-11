@@ -58,7 +58,7 @@ class Api::MembersController < Api::BaseController
     rescue
     end
     
-    render nothing: true
+    render text: 'Thanks for being active!'
   end
 
   def create
