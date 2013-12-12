@@ -17,9 +17,17 @@ class Api::MembersController < Api::BaseController
   end
 
   def unsubscribe
-    movement = Movement.find(1)
-    user = User.for_movement(movement).where(:email => params[:member][:email]).first
-    user.unsubscribe!
+    if params[:t]
+      hash = EmailTrackingHash.decode(params[:t])
+      email = hash.email
+      user = hash.user
+    elsif params[:email]
+      movement = Movement.find(1)
+      email = nil
+      user = User.for_movement(movement).where(:email => params[:member][:email]).first
+    end
+
+    user.unsubscribe!(email)
 
     render text: 'We are sad to see you go.'
   end
