@@ -3,7 +3,7 @@ class Api::MembersController < Api::BaseController
   respond_to :json
 
   # before_filter :verify_request, :only => :create_from_salsa
-  after_filter :set_access_control_headers, :only => :create_from_salsa
+  after_filter :set_access_control_headers, :only => [:create_from_salsa, :unsubscribe]
 
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
@@ -21,7 +21,7 @@ class Api::MembersController < Api::BaseController
       hash = EmailTrackingHash.decode(params[:t])
       email = hash.email
       user = hash.user
-    elsif params[:email]
+    elsif params[:member][:email]
       movement = Movement.find(1)
       email = nil
       user = User.for_movement(movement).where(:email => params[:member][:email]).first
