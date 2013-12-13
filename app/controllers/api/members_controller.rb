@@ -29,7 +29,7 @@ class Api::MembersController < Api::BaseController
 
     user.unsubscribe!(email)
 
-    render json: {data: {success: true}}}
+    render json: {data: {success: true}}
   end
   
   def create_from_salsa
@@ -74,7 +74,7 @@ class Api::MembersController < Api::BaseController
     rescue
     end
     
-    render json: {data: {success: true}}}
+    render json: {data: {success: true}}
   end
 
   def create
