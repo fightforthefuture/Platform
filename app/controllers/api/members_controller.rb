@@ -44,7 +44,7 @@ class Api::MembersController < Api::BaseController
     
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
     
-    if params[:member][:t]
+    if params[:t]
       hash = EmailTrackingHash.decode(params[:t])
       member = hash.user
       email = hash.email
