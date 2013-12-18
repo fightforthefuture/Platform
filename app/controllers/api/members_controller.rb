@@ -44,10 +44,17 @@ class Api::MembersController < Api::BaseController
     
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
     
-    member_scope = User.for_movement(movement).where(:email => params[:member][:email])
-    member = member_scope.first || member_scope.build
-    
-    member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
+    if params[:member][:t]
+      hash = EmailTrackingHash.decode(params[:t])
+      member = hash.user
+      email = hash.email
+    else
+      member_scope = User.for_movement(movement).where(:email => params[:member][:email])
+      member = member_scope.first || member_scope.build
+      email = nil
+    end
+
+    member.take_action_on!(@page, { :email => email }, member_params)
 
     begin
       join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
