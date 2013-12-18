@@ -51,7 +51,7 @@ class Api::MembersController < Api::BaseController
 
     begin
       join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
-      SendgridMailer.delay.user_email(join_email, member)
+      SendgridMailer.delay.user_email(join_email, member) unless member.join_email_sent
     rescue
     end
     
