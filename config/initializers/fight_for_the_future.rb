@@ -1,4 +1,13 @@
 module FightForTheFuture
+    def FightForTheFuture.help
+      puts '# Methods'
+      
+      [
+        'find_or_create_action_page_by_tag',
+        'refresh_email_statistics',
+      ]
+    end
+
     def FightForTheFuture.find_or_create_action_page_by_tag(tag)
         unless page = ActionPage.find_by_name(tag)
           campaign = Campaign.find_by_name('CMS')
@@ -22,5 +31,10 @@ module FightForTheFuture
         end
 
         page
+    end
+
+    def FightForTheFuture.refresh_email_statistics
+      now = Time.zone.now
+      UniqueActivityByEmail.delay(:run_at=>now).update!
     end
 end
