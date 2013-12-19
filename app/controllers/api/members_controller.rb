@@ -29,7 +29,11 @@ class Api::MembersController < Api::BaseController
 
     user.unsubscribe!(email)
 
-    render json: {data: {success: true}}
+    if params[:redirect]
+      redirect_to params[:redirect]
+    else
+      render json: {data: {success: true}}
+    end
   end
   
   def create_from_salsa
@@ -62,7 +66,11 @@ class Api::MembersController < Api::BaseController
     rescue
     end
     
-    render json: {data: {success: true}}
+    if params[:redirect]
+      redirect_to params[:redirect]
+    else
+      render json: {data: {success: true}}
+    end
   end
 
   def create
