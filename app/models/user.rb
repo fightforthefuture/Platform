@@ -56,6 +56,7 @@ class User < ActiveRecord::Base
   has_many :events_hosted, :class_name => "Event", :foreign_key => "host_id"
   has_many :donations
   has_many :agra_actions
+  has_many :websites
 
   has_and_belongs_to_many :events_attended, :class_name => "Event", :association_foreign_key => "event_id",
                           :foreign_key => "attendee_id", :join_table => "events_attendees"
