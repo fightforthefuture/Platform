@@ -141,6 +141,7 @@ PurposePlatform::Application.routes.draw do
       resources :external_activity_events, :only => [:create]
 
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
+      get 'email_tracking/email_clicked' => "email_tracking#email_clicked"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 
       get 'donations' => 'donations#show'
