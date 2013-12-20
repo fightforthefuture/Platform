@@ -58,6 +58,11 @@ class Api::MembersController < Api::BaseController
       email = nil
     end
 
+    # Add website, optionally
+    if params[:website]
+      member.websites << Website.new(:url => params[:website])
+    end
+
     member.take_action_on!(@page, { :email => email }, member_params)
 
     begin
