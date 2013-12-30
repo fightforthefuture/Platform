@@ -4,7 +4,7 @@
 # Setup a simple Vagrant environment for Platform *development*
 #
 # To use:
-#   Install VirtualBox and vagrant (vagrantup.com). 
+#   Install VirtualBox and vagrant (vagrantup.com).
 #   - Tested with vagrant 1.1.5 and VB 4.2.10
 #   vagrant up  (...wait while stuff happens...)
 #   vagrant ssh
@@ -57,9 +57,10 @@ Vagrant.configure("2") do |config|
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   config.vm.provider :virtualbox do |vb|
+    vb.name = "Platform"
     # Don't boot with headless mode
     # vb.gui = true
-    
+
     # Use more memory, for a bit of a performance boost
     vb.customize ["modifyvm", :id, "--memory", "1024"]
 
