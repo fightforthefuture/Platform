@@ -49,7 +49,7 @@ class Api::MembersController < Api::BaseController
       hash = EmailTrackingHash.decode(params[:t])
       email = hash.email
 
-      if hash.user.email == params[:email].downcase
+      if hash.user.email == params[:member][:email].downcase
         member = hash.user
       end
     end
