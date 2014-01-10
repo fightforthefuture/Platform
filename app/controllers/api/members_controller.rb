@@ -39,30 +39,36 @@ class Api::MembersController < Api::BaseController
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
     (render :json => { :errors => "There was a problem processing your request"}, :status => 422 and return) unless params[:guard].blank?
-    
-    tag = params[:tag] || 'untagged'
 
+    email = nil
+    member = nil
     movement = Movement.find(1)
 
-    @page = FightForTheFuture.find_or_create_action_page_by_tag(tag)
-    
-    member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
-    
+    # Load user & email, from tracking hash.
     if params[:t]
       hash = EmailTrackingHash.decode(params[:t])
-      member = hash.user
       email = hash.email
-    else
-      member_scope = User.for_movement(movement).where(:email => params[:member][:email])
-      member = member_scope.first || member_scope.build
-      email = nil
+
+      if hash.user.email == params[:email].downcase
+        member = hash.user
+      end
     end
 
-    # Add website, optionally
+    # Find or create user.
+    if member.nil?
+      member_scope = User.for_movement(movement).where(:email => params[:member][:email])
+      member = member_scope.first || member_scope.build
+    end
+
+    # Add website. (optional)
     if params[:website]
       member.websites << Website.new(:url => params[:website])
     end
 
+    tag = params[:tag] || 'untagged'
+    @page = FightForTheFuture.find_or_create_action_page_by_tag(tag)
+
+    member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
     member.take_action_on!(@page, { :email => email }, member_params)
 
     begin
@@ -70,7 +76,7 @@ class Api::MembersController < Api::BaseController
       SendgridMailer.delay.user_email(join_email, member) unless member.join_email_sent
     rescue
     end
-    
+
     if params[:redirect]
       redirect_to params[:redirect]
     else
