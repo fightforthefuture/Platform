@@ -16,6 +16,13 @@ class Api::MembersController < Api::BaseController
     end
   end
 
+  def signature_count
+    tag = params[:tag]
+    page = Page.where(name: tag).first
+    count = UserActivityEvent.where(page_id: page.id, user_response_type: 'PetitionSignature').length
+    render json: {data: {count: count}}
+  end
+
   def unsubscribe
     if params[:t]
       hash = EmailTrackingHash.decode(params[:t])
