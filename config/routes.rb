@@ -136,6 +136,7 @@ PurposePlatform::Application.routes.draw do
       post 'salsa', to: 'members#create_from_salsa'
       post 'unsubscribe', to: 'members#unsubscribe'
       get 'members' => 'members#show'
+      get 'signature_count' => 'members#signature_count'
       resources :shares, :only => [:create]
 
       resources :external_activity_events, :only => [:create]
