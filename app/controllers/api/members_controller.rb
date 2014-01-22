@@ -19,7 +19,7 @@ class Api::MembersController < Api::BaseController
   def signature_count
     tag = params[:tag]
     page = Page.where(name: tag).first
-    count = UserActivityEvent.where(page_id: page.id, user_response_type: 'PetitionSignature').length
+    count = UserActivityEvent.where(page_id: page.id, user_response_type: 'PetitionSignature').count
     render json: {data: {count: count}}
   end
 
