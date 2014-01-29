@@ -43,7 +43,7 @@ class Api::MembersController < Api::BaseController
     end
   end
 
-  def get_sigatures_from_tag
+  def get_signatures_from_tag
     # Fake error message, if key isn't correct.
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:key] != 'QUDvUVyOerYK5TRCgoUiXiiGTuivBHDAfg7cOOPpCGSwsFmEoaq5TEi4vWcV'
 
@@ -54,7 +54,7 @@ class Api::MembersController < Api::BaseController
     signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").map{|u| fields = {email: u.email, name: u.first_name || '', address: u.street_address ? u.street_address.strip : '', state: u.state || ''}; fields}.map{|f| f[:email] + "\t" + f[:name] + "\t" + f[:address] + "\t" + f[:state] + "\n"}.join
     
     # Respond.
-    render json: {data: signatures}
+    render signatures
   end
   
   def create_from_salsa
