@@ -42,6 +42,20 @@ class Api::MembersController < Api::BaseController
       render json: {data: {success: true}}
     end
   end
+
+  def get_sigatures_from_tag
+    # Fake error message, if key isn't correct.
+    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:key] != 'QUDvUVyOerYK5TRCgoUiXiiGTuivBHDAfg7cOOPpCGSwsFmEoaq5TEi4vWcV'
+
+    # Get page, based on tag.
+    page = ActionPage.where(name: params[:tag]).first
+    
+    # Get a TSV of the signatures.
+    signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").map{|u| fields = {email: u.email, name: u.first_name || '', address: u.street_address ? u.street_address.strip : '', state: u.state || ''}; fields}.map{|f| f[:email] + "\t" + f[:name] + "\t" + f[:address] + "\t" + f[:state] + "\n"}.join
+    
+    # Respond.
+    render json: {data: signatures}
+  end
   
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?

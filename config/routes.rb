@@ -137,6 +137,7 @@ PurposePlatform::Application.routes.draw do
       post 'unsubscribe', to: 'members#unsubscribe'
       get 'members' => 'members#show'
       get 'signature_count' => 'members#signature_count'
+      get 'get_sigatures_from_tag' => 'members#get_sigatures_from_tag'
       resources :shares, :only => [:create]
 
       resources :external_activity_events, :only => [:create]
