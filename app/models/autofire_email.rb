@@ -32,7 +32,28 @@ class AutofireEmail < ActiveRecord::Base
 
   DEFAULT_SENDER = AppConstants.no_reply_address
   DEFAULT_SUBJECT = "Thanks for taking action!"
-  DEFAULT_BODY = "Dear {NAME|Friend},\n\nThank you for taking action on this issue."
+  DEFAULT_BODY = "<p>
+Thanks for taking action! &nbsp;But in order to deliver your statement, we need to make sure you're you.
+</p>
+
+<p>
+<a href='http://www.fightforthefuture.org/thanks'>Please, click here to confirm your email address </span></a>
+</p>
+
+<p>
+Also, this is going to be a fun fight. &nbsp;So we'd like to update you occasionally on this and other campaigns. If that's not okay, please <a href='http://www.fightforthefuture.org/unsubscribe/'>click here</a> to not receive any more emails.
+</p>
+
+<p>
+Thanks for adding your voice,
+</p>
+
+<p>
+Tiffiniy, Holmes, and Evan
+<br />
+Fight for the Future
+</p>
+  "
 
   def footer
     action_page.movement.footer_for_language(language.iso_code)
