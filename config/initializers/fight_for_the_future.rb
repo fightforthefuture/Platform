@@ -50,4 +50,17 @@ module FightForTheFuture
         e.delete
       end
     end
+
+    def FightForTheFuture.find_or_create_member(email, first_name = '', source = '')
+      # Find.
+      member = User.find_by_email(email)
+
+      # Create.
+      if !member
+        member = User.where(email: email, first_name: first_name, created_at: Time.now, updated_at: Time.now, created_by: "Developer", movement_id: 1, language_id: 1, source: source).build
+        member.save
+      end
+
+      member
+    end
 end
