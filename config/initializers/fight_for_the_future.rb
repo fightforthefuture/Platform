@@ -37,4 +37,17 @@ module FightForTheFuture
       now = Time.zone.now
       UniqueActivityByEmail.delay(:run_at=>now).update!
     end
+
+    def FightForTheFuture.delete_user_by_email(email)
+      user = User.find_by_email(email)
+
+      # Delete user.
+      ActiveRecord::Base.connection.execute "DELETE FROM `users` WHERE (email = '#{email}') LIMIT 1"
+
+      # Delete events.
+      UserActivityEvent.where(user_id: user.id).each do
+        |e|
+        e.delete
+      end
+    end
 end
