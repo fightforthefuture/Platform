@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130913150541) do
+ActiveRecord::Schema.define(:version => 20131220114416) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -493,8 +493,8 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
     t.integer  "user_id",      :null => false
     t.integer  "push_id",      :null => false
     t.integer  "email_id",     :null => false
-    t.integer  "batch_number", :null => true
     t.datetime "created_at"
+    t.integer  "batch_number"
   end
 
   add_index "push_sent_emails", ["movement_id", "email_id"], :name => "idx_emails"
@@ -533,8 +533,8 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
     t.integer  "campaign_id"
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "shares", :force => true do |t|
@@ -678,6 +678,13 @@ ActiveRecord::Schema.define(:version => 20130913150541) do
   add_index "users", ["name_safe"], :name => "index_users_on_name_safe"
   add_index "users", ["postcode"], :name => "index_users_on_postcode"
   add_index "users", ["random"], :name => "users_random_idx"
+
+  create_table "websites", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "url"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   add_foreign_key "content_modules", "content_modules", :name => "live_content_module_id_fk", :column => "live_content_module_id"
 
