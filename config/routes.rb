@@ -134,12 +134,16 @@ PurposePlatform::Application.routes.draw do
 
       resources :members, :only => [:create]
       post 'salsa', to: 'members#create_from_salsa'
+      post 'unsubscribe', to: 'members#unsubscribe'
       get 'members' => 'members#show'
+      get 'signature_count' => 'members#signature_count'
+      get 'get_signatures_from_tag' => 'members#get_signatures_from_tag'
       resources :shares, :only => [:create]
 
       resources :external_activity_events, :only => [:create]
 
       get 'email_tracking/email_opened' => "email_tracking#email_opened"
+      get 'email_tracking/email_clicked' => "email_tracking#email_clicked"
       post 'email_tracking/email_clicked' => "email_tracking#email_clicked"
 
       get 'donations' => 'donations#show'

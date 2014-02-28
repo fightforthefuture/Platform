@@ -3,7 +3,7 @@ class Api::MembersController < Api::BaseController
   respond_to :json
 
   # before_filter :verify_request, :only => :create_from_salsa
-  after_filter :set_access_control_headers, :only => :create_from_salsa
+  after_filter :set_access_control_headers, :only => [:create_from_salsa, :unsubscribe]
 
   def show
     @member = movement.members.find_by_email(params[:email]) unless params[:email].blank?
@@ -15,50 +15,94 @@ class Api::MembersController < Api::BaseController
       render :nothing => true, :status => status_response
     end
   end
+
+  def signature_count
+    tag = params[:tag]
+    page = Page.where(name: tag).first
+    count = UserActivityEvent.where(page_id: page.id, user_response_type: 'PetitionSignature').count
+    render json: {data: {count: count}}
+  end
+
+  def unsubscribe
+    if params[:t]
+      hash = EmailTrackingHash.decode(params[:t])
+      email = hash.email
+      user = hash.user
+    elsif params[:member][:email]
+      movement = Movement.find(1)
+      email = nil
+      user = User.for_movement(movement).where(:email => params[:member][:email]).first
+    end
+
+    user.unsubscribe!(email)
+
+    if params[:redirect]
+      redirect_to params[:redirect]
+    else
+      render json: {data: {success: true}}
+    end
+  end
+
+  def get_signatures_from_tag
+    # Fake error message, if key isn't correct.
+    (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:key] != 'QUDvUVyOerYK5TRCgoUiXiiGTuivBHDAfg7cOOPpCGSwsFmEoaq5TEi4vWcV'
+
+    # Get page, based on tag.
+    page = ActionPage.where(name: params[:tag]).first
+    
+    # Get a TSV of the signatures.
+    signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").map{|u| fields = {email: u.email, name: u.first_name || '', address: u.street_address ? u.street_address.strip : '', state: u.state || ''}; fields}.map{|f| f[:email] + "\t" + f[:name] + "\t" + f[:address] + "\t" + f[:state] + "\n"}.join
+    
+    # Respond.
+    render :text => signatures
+  end
   
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
     (render :json => { :errors => "There was a problem processing your request"}, :status => 422 and return) unless params[:guard].blank?
-    
-    tag = params[:tag] || 'untagged'
 
+    email = nil
+    member = nil
     movement = Movement.find(1)
 
-    unless @page = ActionPage.find_by_name(tag)
-      campaign = Campaign.find_by_name('CMS')
-      
-      @page = ActionPage.create(
-        name: tag,
-        movement_id: 1,
-        type: 'ActionPage',
-        action_sequence_id: campaign.action_sequences.first.id
-      )
+    # Load user & email, from tracking hash.
+    if params[:t]
+      hash = EmailTrackingHash.decode(params[:t])
+      email = hash.email
 
-      petition = PetitionModule.create!(
-        :title => "Sign, please",
-        :content => 'We the undersigned...',
-        :petition_statement => "This is the petition statement",
-        :signatures_goal => 1,
-        :thermometer_threshold => 0,
-        :language => Language.find_by_iso_code(:en)
-      )
-      ContentModuleLink.create!(:page => @page, :content_module => petition, :position => 3, :layout_container => :main_content)
+      if hash.user.email == params[:member][:email].downcase
+        member = hash.user
+      end
     end
-    
+
+    # Find or create user.
+    if member.nil?
+      member_scope = User.for_movement(movement).where(:email => params[:member][:email])
+      member = member_scope.first || member_scope.build
+    end
+
+    # Add website. (optional)
+    if params[:website]
+      member.websites << Website.new(:url => params[:website])
+    end
+
+    tag = params[:tag] || 'untagged'
+    @page = FightForTheFuture.find_or_create_action_page_by_tag(tag)
+
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
-    
-    member_scope = User.for_movement(movement).where(:email => params[:member][:email])
-    member = member_scope.first || member_scope.build
-    
-    member.take_action_on!(@page, { :email => params[:member][:info] }, member_params)
+    member.take_action_on!(@page, { :email => email }, member_params)
 
     begin
       join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
-      SendgridMailer.delay.user_email(join_email, member)
+      SendgridMailer.delay.user_email(join_email, member) unless member.join_email_sent
     rescue
     end
-    
-    render nothing: true
+
+    if params[:redirect]
+      redirect_to params[:redirect]
+    else
+      render json: {data: {success: true}}
+    end
   end
 
   def create
