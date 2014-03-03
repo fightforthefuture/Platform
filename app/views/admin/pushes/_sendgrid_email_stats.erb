@@ -1,0 +1,13 @@
+<tr>
+  <td colspan="5">From SendGrid <%= stats %></td>
+  <% if stats %>
+    <%= numerical_table_value stats, "unique_opens" %>
+    <%= numerical_table_value stats, "unique_clicks" %>
+    <td>&mdash;</td>
+    <td>&mdash;</td>
+    <%= numerical_table_value stats, "unsubscribes" %>
+    <%= numerical_table_value stats, "spamreports" %>
+  <% else %>
+    <td colspan="6">No data</td>
+  <% end %>
+</tr>

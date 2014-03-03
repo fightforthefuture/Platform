@@ -1,7 +1,7 @@
 class EmailStatsTable < ReportTable
 
   def self.columns
-    ["Created", "Sent At", "Blast", "Email", "Sent to", "Opens", "Opens Percentage", "Clicks", "Clicks Percentage", "Actions Taken", "Actions Taken Percentage", "New Members", "New Members Percentage", "Unsubscribed", "Unsubscribed Percentage", "Spam", "Spam Percentage", "Total $", "Avg. $"]
+    ["Id", "Created", "Sent At", "Blast", "Email", "Sent to", "Opens", "Opens Percentage", "Clicks", "Clicks Percentage", "Actions Taken", "Actions Taken Percentage", "New Members", "New Members Percentage", "Unsubscribed", "Unsubscribed Percentage", "Spam", "Spam Percentage", "Total $", "Avg. $"]
   end
 
   def initialize(emails)
@@ -16,6 +16,7 @@ class EmailStatsTable < ReportTable
   def row_for(email)
     stats = load_stats[email.id]
     row   = [
+      email.id,
       email.created_at.to_date.to_s,
       email.sent_at.to_s,
       email.blast.name,
@@ -55,7 +56,7 @@ class EmailStatsTable < ReportTable
         percentage = ratio * 100 unless total == 0
 
         stats[stat_obj.email_id][stat_obj.activity.to_sym][:as_value]      = stat_obj.total_count
-        stats[stat_obj.email_id][stat_obj.activity.to_sym][:as_percentage] = percentage == 0 ? "N/A" : "#{percentage.round}%" 
+        stats[stat_obj.email_id][stat_obj.activity.to_sym][:as_percentage] = percentage == 0 ? "N/A" : "#{percentage.round}%"
       end
       stats[:last_updated_at] = latest_date
       stats
