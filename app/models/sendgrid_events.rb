@@ -144,11 +144,7 @@ module SendgridEvents
     event = evt["event"]
     email_address = evt["email"]
     unique_args = evt["unique_args"]
-    email_id = if unique_args
-                 unique_args["email_id"]
-               else
-                 false
-               end
+    email_id = evt["email_id"]
 
     if event and email_address and email_id
       handler = @@the_handlers[event.to_sym]
