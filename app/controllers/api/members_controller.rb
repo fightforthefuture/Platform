@@ -50,8 +50,8 @@ class Api::MembersController < Api::BaseController
     # Get page, based on tag.
     page = ActionPage.where(name: params[:tag]).first
     
-    # Get a TSV of the signatures.
-    signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").map{|u| fields = {email: u.email, name: u.first_name || '', address: u.street_address ? u.street_address.strip : '', state: u.state || ''}; fields}.map{|f| f[:email] + "\t" + f[:name] + "\t" + f[:address] + "\t" + f[:state] + "\n"}.join
+    # Get a JSON of the signatures.
+    signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").to_json
     
     # Respond.
     render :text => signatures
