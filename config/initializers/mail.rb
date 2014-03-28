@@ -5,12 +5,12 @@ class Mail::Message
   end
 end
 
-ActionMailer::Base.smtp_settings = {  
-  :address        => "smtp.sendgrid.com",
+ActionMailer::Base.smtp_settings = {
+  :address        => ENV["SENDGRID_HOST"] || "smtp.sendgrid.com",
   :domain         => "platform.yourname.com",
   :port           => 25,
   :user_name      => ENV["SENDGRID_USERNAME"],
   :password       => ENV["SENDGRID_PASSWORD"],
   :authentication => :plain,
-  :enable_starttls_auto => false
+  :enable_starttls_auto => ENV["SENDGRID_TLS"] == 'true'
 }
