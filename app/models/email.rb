@@ -60,7 +60,7 @@ class Email < ActiveRecord::Base
     Email.for_movement_id(movement_id).order("emails.updated_at desc").collect { |email| [email.name, email.id] }
   end
 
-  handle_asynchronously(:send_test!) unless Rails.env.test?
+  handle_asynchronously :send_test!, :queue => QueueConfigs::HIGH_QUEUE unless Rails.env.test?
 
   def html_body
     if ENV['ENABLE_EMAIL_LINK_TRACKING']
@@ -145,7 +145,7 @@ class Email < ActiveRecord::Base
 
     scheduled_time_in_app_time_zone = run_at.in_time_zone(Time.zone)
     job_handle = Delayed::Job.enqueue(blast_job, run_at: scheduled_time_in_app_time_zone,
-                                                 queue: QueueConfigs::LIST_CUTTER_BLASTER_QUEUE)
+                                                 queue: QueueConfigs::BLASTER_QUEUE)
     update_attribute(:delayed_job_id, job_handle.id)
   end
 

@@ -10,8 +10,7 @@ Delayed::Worker.default_queue_name = ENV['DEFAULT_QUEUE'] || "default"
 
 module QueueConfigs
 
-  LIST_CUTTER_BLASTER_QUEUE = ENV['LIST_CUTTER_BLASTER_QUEUE'] || "list_cutter_blaster"
-
-
-
+  BLASTER_QUEUE = ENV['LIST_CUTTER_BLASTER_QUEUE'] || "blaster"
+  LIST_CUTTER_QUEUE = ENV['LIST_CUTTER_BLASTER_QUEUE'] || "list_cutter"
+  HIGH_QUEUE = ENV['LIST_CUTTER_BLASTER_QUEUE'] || "high"
 end
