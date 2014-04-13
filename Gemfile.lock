@@ -209,6 +209,7 @@ GEM
     heroku-api (0.3.7)
       excon (~> 0.16.10)
     hike (1.2.3)
+    hirefire-resource (0.3.1)
     hirefireapp (0.0.8)
     hodel_3000_compliant_logger (0.1.1)
     i18n (0.6.9)
@@ -467,6 +468,7 @@ DEPENDENCIES
   guard-rspec
   haml
   heroku
+  hirefire-resource
   hirefireapp
   jasmine
   jquery-rails

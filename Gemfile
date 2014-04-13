@@ -9,6 +9,7 @@ gem 'uuid'
 gem 'json', '~> 1.7.7'
 gem 'heroku'
 gem "puma"
+gem "hirefire-resource"
 
 gem 'yui-compressor', :git => "git://github.com/oleander/ruby-yui-compressor.git", :require  => "yui/compressor"
 gem 'will_paginate'
