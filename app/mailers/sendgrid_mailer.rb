@@ -14,6 +14,7 @@ class SendgridMailer < ActionMailer::Base
     options.merge!({:from => email.from}) if email.respond_to?(:from)
 
     prepared_mail=prepare(email, false, options)
+    Rails.logger.debug "EMAIL_SENDING_ISSUE: #{ActionMailer::Base.smtp_settings}"
     prepared_mail.deliver
     prepared_mail
   end
