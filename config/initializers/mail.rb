@@ -8,7 +8,7 @@ end
 ActionMailer::Base.smtp_settings = {
   :address        => ENV["SENDGRID_HOST"] || "smtp.sendgrid.com",
   :domain         => "platform.yourname.com",
-  :port           => 2525,
+  :port           => ENV.fetch('SENDGRID_PORT'){25},
   :user_name      => ENV["SENDGRID_USERNAME"],
   :password       => ENV["SENDGRID_PASSWORD"],
   :authentication => :plain,
