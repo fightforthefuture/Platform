@@ -30,7 +30,6 @@
 #  updated_by               :string(255)
 #  postcode_id              :integer
 #  is_volunteer             :boolean          default(FALSE)
-#  random                   :float
 #  movement_id              :integer          not null
 #  language_id              :integer
 #  postcode                 :string(255)
