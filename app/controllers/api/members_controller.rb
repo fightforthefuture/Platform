@@ -45,6 +45,7 @@ class Api::MembersController < Api::BaseController
       end
     else
       expected_email = params[:member][:email] || '<unknown>'
+      logger.info "Asked to unsubscribe but no user found with email #{expected_email}"
       render status: :not_found, json: {data: {success: false, reason: "No user was found with email #{expected_email}"}}
     end
   end
