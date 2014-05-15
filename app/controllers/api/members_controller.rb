@@ -34,12 +34,18 @@ class Api::MembersController < Api::BaseController
       user = User.for_movement(movement).where(:email => params[:member][:email]).first
     end
 
-    user.unsubscribe!(email)
+    if user
+      logger.info "Unsubscribing #{user.email}"
+      user.unsubscribe!(email)
 
-    if params[:redirect]
-      redirect_to params[:redirect]
+      if params[:redirect]
+        redirect_to params[:redirect]
+      else
+        render json: {data: {success: true}}
+      end
     else
-      render json: {data: {success: true}}
+      expected_email = params[:member][:email] || '<unknown>'
+      render status: :not_found, json: {data: {success: false, reason: "No user was found with email #{expected_email}"}}
     end
   end
 
@@ -49,14 +55,14 @@ class Api::MembersController < Api::BaseController
 
     # Get page, based on tag.
     page = ActionPage.where(name: params[:tag]).first
-    
+
     # Get a JSON of the signatures.
     signatures = User.joins("JOIN user_activity_events as uae ON uae.page_id = '#{page.id}' AND uae.user_id = users.id AND uae.user_response_type = 'PetitionSignature'").to_json
-    
+
     # Respond.
     render :text => signatures
   end
-  
+
   def create_from_salsa
     (render :json => { :errors => "Language field is required"}, :status => 422 and return) if params[:member][:language].blank?
     (render :json => { :errors => "There was a problem processing your request"}, :status => 422 and return) unless params[:guard].blank?
@@ -146,9 +152,9 @@ class Api::MembersController < Api::BaseController
     raise ActionController::RoutingError.new('Not Found') and return unless ips.include?(request.remote_ip)
   end
 
-  def set_access_control_headers 
-    headers['Access-Control-Allow-Origin'] = '*' 
-    headers['Access-Control-Request-Method'] = '*' 
+  def set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Request-Method'] = '*'
   end
 
   def join_page_slug
