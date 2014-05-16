@@ -13,4 +13,3 @@ When /^I enter the details required for creating the petition page (.+)$/ do |pe
   element[5].set("1")
   sleep 2
 end
->>>>>>> develop:features/step_definitions/petition_module_steps.rb
