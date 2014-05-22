@@ -1,6 +1,6 @@
 require 'newrelic_rpm'
 
-module SendgridEvents
+module Events
 
   class Event
     def initialize(movement_id, email_address, email_id)
@@ -16,13 +16,23 @@ module SendgridEvents
     # address, for instance, it will run succesfully but won't do
     # anything.
     def handle
-      NewRelic::Agent.increment_metric("Custom/SendgridEvent/#{@name}", 1)
+      NewRelic::Agent.increment_metric("Custom/Event/#{@name}", 1)
       # Do whatever this event needs to do
     end
 
     def to_s
       @name ||= "Event"
       "#{@name}(#{@movement_id}, #{@email_address}, #{@email_id})"
+    end
+
+    # Returns the User affected by this event
+    def user
+      User.find_by_movement_id_and_email(@movement_id, @email_address)
+    end
+
+    # Returns the Email that caused this event, nil if there is no email
+    def email
+      Email.find_by_id(@email_id)
     end
   end
 
@@ -59,9 +69,10 @@ module SendgridEvents
     def handle
       super
       # Could not deliver, so unsubscribe this user.
-      member = User.find_by_movement_id_and_email(@movement_id, @email_address)
+      member = self.user
+      email = self.email
       if member
-        member.permanently_unsubscribe!
+        member.unsubscribe!(email)
       else
         true
       end
@@ -73,8 +84,8 @@ module SendgridEvents
     def handle
       super
       # Register an email_viewed event
-      member = User.find_by_movement_id_and_email(@movement_id, @email_address)
-      email = Email.find_by_id(@email_id)
+      member = self.user
+      email = self.email
       if member and email
         UserActivityEvent.email_viewed!(member, email)
       else
@@ -88,8 +99,8 @@ module SendgridEvents
     def handle
       super
       # Register an email_clicked event if we don't have one already
-      member = User.find_by_movement_id_and_email(@movement_id, @email_address)
-      email = Email.find_by_id(@email_id)
+      member = self.user
+      email = self.email
       if member and email
         UserActivityEvent.email_clicked!(member, email)
       else
@@ -102,10 +113,10 @@ module SendgridEvents
     @name = "SpamReport"
     def handle
       super
-      member = User.find_by_movement_id_and_email(@movement_id, @email_address)
-      email = Email.find_by_id(@email_id)
+      member = self.user
+      email = self.email
       if member and email
-        member.permanently_unsubscribe!
+        member.unsubscribe!(email)
         UserActivityEvent.email_spammed!(member, email)
       else
         true
@@ -117,9 +128,10 @@ module SendgridEvents
     @name = "Unsubscribe"
     def handle
       super
-      member = User.find_by_movement_id_and_email(@movement_id, @email_address)
+      member = self.user
+      email  = self.email
       if member
-        member.permanently_unsubscribe!
+        member.unsubscribe!(email)
       else
         true
       end
@@ -147,8 +159,8 @@ module SendgridEvents
     @@the_noop
   end
 
-  # Create an Event object from JSON
-  def self.create(movement_id, evt)
+  # Create an Event object from SendGrid JSON
+  def self.create_from_sendgrid(movement_id, evt)
     event = evt["event"]
     email_address = evt["email"]
     email_id = evt["email_id"]
@@ -158,12 +170,12 @@ module SendgridEvents
       if handler
         handler.new(movement_id, email_address, email_id)
       else
-        NewRelic::Agent.increment_metric('Custom/SendgridEvent/NoHandler', 1)
+        NewRelic::Agent.increment_metric('Custom/Event/NoHandler', 1)
         Rails.logger.warn "Could not find a handler to process SendGrid event #{evt}"
         @@the_noop
       end
     else
-      NewRelic::Agent.increment_metric('Custom/SendgridEvent/BadData', 1)
+      NewRelic::Agent.increment_metric('Custom/Event/BadData', 1)
       Rails.logger.warn "Could not create a handler to process SendGrid event from #{evt}"
       @@the_noop
     end

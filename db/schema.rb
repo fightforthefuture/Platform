@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131220114416) do
+ActiveRecord::Schema.define(:version => 20140513213452) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -651,7 +651,6 @@ ActiveRecord::Schema.define(:version => 20131220114416) do
     t.string   "created_by"
     t.string   "updated_by"
     t.boolean  "is_volunteer",                            :default => false
-    t.float    "random"
     t.integer  "movement_id",                                                            :null => false
     t.integer  "language_id"
     t.string   "postcode"
@@ -677,7 +676,6 @@ ActiveRecord::Schema.define(:version => 20131220114416) do
   add_index "users", ["movement_id", "source", "deleted_at"], :name => "index_users_on_movement_id_and_source_and_deleted_at"
   add_index "users", ["name_safe"], :name => "index_users_on_name_safe"
   add_index "users", ["postcode"], :name => "index_users_on_postcode"
-  add_index "users", ["random"], :name => "users_random_idx"
 
   create_table "websites", :force => true do |t|
     t.integer  "user_id"
