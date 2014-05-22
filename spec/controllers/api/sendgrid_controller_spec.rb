@@ -90,37 +90,37 @@ describe Api::SendgridController do
 
   context '#unsubscribe_handler' do
     it 'should always respond success' do
-      post :unsubscribe_handler, :movement_id => allout.id
+      post :unsubscribe_handler, :movement_id => @movement.id
       expect(response.code).to eq('200')
     end
 
     it 'should unsubscribe given a valid from address' do
       email = create(:email)
-      pse = PushSentEmail.new(movement_id: walkfree.id, user_id: walkfree_member.id, push_id: email.push.id, email_id: email.id, batch_number: 1).save!
+      pse = PushSentEmail.new(movement_id: @movement.id, user_id: @supporter.id, push_id: email.push.id, email_id: email.id, batch_number: 1).save!
 
-      address = ListUnsubscribe.encode_unsubscribe_email_address(email, 1, walkfree)
+      address = ListUnsubscribe.encode_unsubscribe_email_address(email, 1, @movement)
 
-      expect(walkfree_member.is_member).to be_true
-      post :unsubscribe_handler, movement_id: walkfree.id, from: walkfree_member.email, to: address
+      expect(@supporter.is_member).to be_true
+      post :unsubscribe_handler, movement_id: @movement.id, from: @supporter.email, to: address
       expect(response.code).to eq('200')
-      expect(walkfree_member.is_member).to be_false
+      expect(@supporter.is_member).to be_false
     end
 
     it 'should not fail is to or from parameters are empty' do
-      post :unsubscribe_handler, movement_id: walkfree.id
+      post :unsubscribe_handler, movement_id: @movement.id
       expect(response.code).to eq('200')
     end
 
     it 'should not unsubscribe given an invalid from address' do
       email = create(:email)
-      pse = PushSentEmail.new(movement_id: walkfree.id, user_id: walkfree_member.id, push_id: email.push.id, email_id: email.id, batch_number: 1).save!
+      pse = PushSentEmail.new(movement_id: @movement.id, user_id: @supporter.id, push_id: email.push.id, email_id: email.id, batch_number: 1).save!
 
-      address = ListUnsubscribe.encode_unsubscribe_email_address(email, 1, walkfree)
+      address = ListUnsubscribe.encode_unsubscribe_email_address(email, 1, @movement)
 
-      expect(walkfree_member.is_member).to be_true
-      post :unsubscribe_handler, movement_id: walkfree.id, from: walkfree_member.email, to: 'bogus@example.com'
+      expect(@supporter.is_member).to be_true
+      post :unsubscribe_handler, movement_id: @movement.id, from: @supporter.email, to: 'bogus@example.com'
       expect(response.code).to eq('200')
-      expect(walkfree_member.is_member).to be_true
+      expect(@supporter.is_member).to be_true
     end
   end
 end

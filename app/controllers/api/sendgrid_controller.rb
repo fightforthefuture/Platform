@@ -14,7 +14,7 @@ class Api::SendgridController < Api::BaseController
   end
 
   def handle_event(movement_id, event)
-    evt = SendgridEvents::create(movement_id, event)
+    evt = Events::create_from_sendgrid(movement_id, event)
     evt.delay.handle
   end
 

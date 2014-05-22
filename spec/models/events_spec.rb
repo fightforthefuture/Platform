@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "SendgridEvents" do
+describe "Events" do
 
   before(:each) do
     @action_page = FactoryGirl.create(:action_page)
@@ -26,25 +26,25 @@ describe "SendgridEvents" do
     klass =
       case type
       when :processed
-          SendgridEvents::Processed
+          Events::Processed
       when :dropped
-          SendgridEvents::Dropped
+          Events::Dropped
       when :bounce
-          SendgridEvents::Bounce
+          Events::Bounce
       when :delivered
-          SendgridEvents::Delivered
+          Events::Delivered
       when :deferred
-          SendgridEvents::Deferred
+          Events::Deferred
       when :bounce
-          SendgridEvents::Bounce
+          Events::Bounce
       when :open
-          SendgridEvents::Open
+          Events::Open
       when :click
-          SendgridEvents::Click
+          Events::Click
       when :spamreport
-          SendgridEvents::SpamReport
+          Events::SpamReport
       when :unsubscribe
-          SendgridEvents::Unsubscribe
+          Events::Unsubscribe
       end
     klass.new(@movement.id, email_address, email_id)
   end
@@ -73,7 +73,7 @@ describe "SendgridEvents" do
 
   describe "noop" do
     it "does nothing" do
-      noop = SendgridEvents::noop
+      noop = Events::noop
       noop.handle
     end
   end

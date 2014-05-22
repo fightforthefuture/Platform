@@ -165,8 +165,8 @@ describe Api::MembersController do
   describe 'show' do
     before do
       @movement = FactoryGirl.create(:movement)
-      @member = FactoryGirl.create(:user, :movement => @movement, 
-        :email => 'john.doe@example.com', :first_name => 'John', :last_name => 'Doe', :country_iso => 'us', :postcode => '10011', 
+      @member = FactoryGirl.create(:user, :movement => @movement,
+        :email => 'john.doe@example.com', :first_name => 'John', :last_name => 'Doe', :country_iso => 'us', :postcode => '10011',
         :home_number => '555-5555', :mobile_number => '444-4444', :street_address => "John's place", :suburb => 'NY')
     end
 
@@ -201,6 +201,37 @@ describe Api::MembersController do
 
       response.status.should == 400
     end
+  end
+
+  describe 'unsubscribe' do
+    before do
+      @email = FactoryGirl.create(:email)
+      @movement = FactoryGirl.create(:movement, id: 1)
+      @member = FactoryGirl.create(:user, movement: @movement,
+                                   email: 'john.doe@example.com', first_name: 'John', last_name: 'Doe', country_iso: 'us', postcode: '10011',
+                                   home_number: '555-5555', mobile_number: '444-4444', street_address: "John's place", suburb: 'NY')
+      @member.save!
+    end
+
+
+    it 'should unsubscribe the user if given a valid email parameter' do
+      post :unsubscribe, {movement_id: @movement.id, member: {email: @member.email}}
+
+     expect(response.status).to eq(200)
+      json = JSON.parse(response.body)
+      expect(json).to eq({'data' => {'success' => true}})
+    end
+
+    it 'should fail with an appropriate message if no email it sent in the request' do
+      post :unsubscribe, movement_id: @movement.id
+
+      expect(response.status).to eq(400)
+      json = JSON.parse(response.body)
+      expect(json).to eq({'data' => {'success' => false, 'reason' => 'No user found for the given email address'}})
+
+      expect(User.find_by_email(@member.email).member?).to be_true
+    end
+
   end
 
 end
