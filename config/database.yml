@@ -6,6 +6,11 @@ development:
    username: root
    password:
 
+production:
+   adapter: mysql2
+   encoding: utf8
+   pool: 16
+
 test: &test
    adapter: mysql2
    encoding: utf8
