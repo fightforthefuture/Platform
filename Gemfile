@@ -74,6 +74,7 @@ end
 group :production, :staging do
   gem 'memcachier'
   gem 'dalli'
+  gem 'honeybadger'
 end
 
 group :development, :staging do

@@ -212,6 +212,8 @@ GEM
     hirefire-resource (0.3.2)
     hirefireapp (0.0.8)
     hodel_3000_compliant_logger (0.1.1)
+    honeybadger (1.11.1)
+      json
     i18n (0.6.9)
     jasmine (1.3.2)
       jasmine-core (~> 1.3.1)
@@ -471,6 +473,7 @@ DEPENDENCIES
   heroku
   hirefire-resource
   hirefireapp
+  honeybadger
   jasmine
   jquery-rails
   jslint_on_rails
