@@ -60,7 +60,7 @@ class Email < ActiveRecord::Base
     Email.for_movement_id(movement_id).order("emails.updated_at desc").collect { |email| [email.name, email.id] }
   end
 
-  handle_asynchronously :send_test!, :queue => QueueConfigs::HIGH_QUEUE unless Rails.env.test?
+  handle_asynchronously :send_test!, :queue => QueueConfigs::BLASTER_QUEUE unless Rails.env.test?
 
   def html_body
     if ENV['ENABLE_EMAIL_LINK_TRACKING']
