@@ -100,12 +100,6 @@ class Api::MembersController < Api::BaseController
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
     member.take_action_on!(@page, { :email => email }, member_params)
 
-    begin
-      join_email = movement.join_emails.first {|join_email| join_email.language == member.language}
-      SendgridMailer.delay.user_email(join_email, member) unless member.join_email_sent
-    rescue
-    end
-
     if params[:redirect]
       redirect_to params[:redirect]
     else
