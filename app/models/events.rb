@@ -3,6 +3,16 @@ require 'newrelic_rpm'
 module Events
 
   class Event
+    def handle
+      NewRelic::Agent.increment_metric("Custom/Event/#{@name}", 1)
+      # Do whatever this event needs to do
+    end
+
+    def to_s
+      @name ||= "Event"
+      "#{@name}(#{@movement_id}, #{@email_address}, #{@email_id})"
+    end
+
     def initialize(movement_id, email_address, email_id)
       @movement_id = movement_id
       @email_address = email_address
