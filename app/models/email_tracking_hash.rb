@@ -1,6 +1,8 @@
 class EmailTrackingHash < Struct.new(:email, :user)
 
-  def self.decode(hash)
+  # Decode a hash into email ID and usr ID without hitting the
+  # database. Returns array email_id, user_id as integers.
+  def self.decode_raw(hash)
     hash ||= ""
     data_pairs = Base64.urlsafe_decode64(hash).split ","
     attrs = data_pairs.inject({}) do |hash, pair|
@@ -8,8 +10,17 @@ class EmailTrackingHash < Struct.new(:email, :user)
       hash.merge key.to_sym => value
     end
 
-    email = Email.where(:id => attrs[:emailid]).first
-    user  = User.where(:id => attrs[:userid]).first
+    email_id = attrs[:emailid]
+    user_id = attrs[:userid]
+
+    [email_id.to_i, user_id.to_i]
+  end
+
+  def self.decode(hash)
+    email_id, user_id = self.decode_raw(hash)
+
+    email = Email.where(:id => email_id).first
+    user  = User.where(:id => user_id).first
 
     self.new email, user
   rescue ArgumentError # "invalid base64"

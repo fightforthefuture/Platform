@@ -25,21 +25,18 @@ class Api::MembersController < Api::BaseController
 
   def unsubscribe
     if params[:t]
-      hash = EmailTrackingHash.decode(params[:t])
-      email = hash.email
-      user = hash.user
+      email_id, user_id = EmailTrackingHash.decode_raw(params[:t])
+      user = User.find_by_id(user_id)
+      if user
+        email = user.email
+      end
     elsif params[:member] && params[:member][:email]
-      email = nil
-      user = User.find_by_movement_id_and_email(1, params[:member][:email])
+      email_id = nil
+      email = params[:member][:email]
     end
 
-    if user
-      email_id = if email
-                   email.id
-                 else
-                   nil
-                 end
-      Events::Unsubscribe.new(1, user.email, email_id).delay.handle
+    if user_id
+      Events::Unsubscribe.new(1, email, email_id).delay.handle
 
       if params[:redirect]
         redirect_to params[:redirect]
