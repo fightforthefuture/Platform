@@ -35,7 +35,7 @@ class Api::MembersController < Api::BaseController
       email = params[:member][:email]
     end
 
-    if user_id
+    if email
       Events::Unsubscribe.new(1, email, email_id).delay.handle
 
       if params[:redirect]
