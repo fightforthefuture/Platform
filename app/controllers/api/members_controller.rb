@@ -95,12 +95,7 @@ class Api::MembersController < Api::BaseController
     @page = FightForTheFuture.find_or_create_action_page_by_tag(tag)
 
     member_params = params[:member].merge({'language' => Language.find_by_iso_code(params[:member][:language])})
-    #member.take_action_on!(@page, { :email => email }, member_params)
-
-    # Save the new member and record an appropriate User Activity
-    # Event. Don't send a signup email as that is done in another system.
-    member.attributes = member_params
-    member.subscribe_through!(@page, email)
+    member.take_action_on!(@page, { :email => email }, member_params)
 
     if params[:redirect]
       redirect_to params[:redirect]
