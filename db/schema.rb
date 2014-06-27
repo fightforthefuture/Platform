@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140513213452) do
+ActiveRecord::Schema.define(:version => 20140626214535) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -498,7 +498,6 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
   end
 
   add_index "push_sent_emails", ["movement_id", "email_id"], :name => "idx_emails"
-  add_index "push_sent_emails", ["movement_id", "push_id", "email_id", "user_id"], :name => "idx_unique_sent", :unique => true
   add_index "push_sent_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_sent_emails", ["push_id"], :name => "index_push_sent_emails_on_push_id"
   add_index "push_sent_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
@@ -527,7 +526,6 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
   add_index "push_viewed_emails", ["movement_id", "email_id"], :name => "idx_emails"
   add_index "push_viewed_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_viewed_emails", ["push_id"], :name => "index_push_viewed_emails_on_push_id"
-  add_index "push_viewed_emails", ["user_id", "email_id", "created_at"], :name => "idx_unique_open", :unique => true
   add_index "push_viewed_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
 
   create_table "pushes", :force => true do |t|

@@ -1,7 +1,7 @@
 development:
    adapter: mysql2
    encoding: utf8
-   database: platform_development
+   database: fftf_platform_development
    pool: 5
    username: root
    password:
@@ -14,7 +14,7 @@ production:
 test: &test
    adapter: mysql2
    encoding: utf8
-   database: platform_test<%= ENV['TEST_ENV_NUMBER'] %>
+   database: fftf_platform_test<%= ENV['TEST_ENV_NUMBER'] %>
    username: root
 
 vagrant:

@@ -81,8 +81,8 @@ class Api::MembersController < Api::BaseController
 
     # Find or create user.
     if member.nil?
-      member_scope = User.for_movement(movement).where(:email => params[:member][:email])
-      member = member_scope.first || member_scope.build
+      member = movement.members.where(email: params[:member][:email]).
+                                    first_or_initialize(member_params)
     end
 
     # Add website. (optional)
