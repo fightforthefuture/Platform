@@ -46,7 +46,9 @@ class User < ActiveRecord::Base
   acts_as_user_stampable
   devise :database_authenticatable, :recoverable, :rememberable, :trackable
 
-  attr_accessor :required_user_details
+  attr_accessor :required_user_details, :geolocation_service,
+                :opt_in_ip_address, :opt_in_url
+
   cattr_accessor :current_user
 
   belongs_to :movement

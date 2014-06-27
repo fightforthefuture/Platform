@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140513213452) do
+ActiveRecord::Schema.define(:version => 20140626214535) do
 
   create_table "action_sequences", :force => true do |t|
     t.integer  "campaign_id"
@@ -498,7 +498,6 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
   end
 
   add_index "push_sent_emails", ["movement_id", "email_id"], :name => "idx_emails"
-  add_index "push_sent_emails", ["movement_id", "push_id", "email_id", "user_id"], :name => "idx_unique_sent", :unique => true
   add_index "push_sent_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_sent_emails", ["push_id"], :name => "index_push_sent_emails_on_push_id"
   add_index "push_sent_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
@@ -587,6 +586,8 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
     t.integer  "movement_id"
     t.string   "comment"
     t.boolean  "comment_safe"
+    t.string   "opt_in_ip_address"
+    t.string   "opt_in_url"
   end
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"

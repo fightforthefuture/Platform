@@ -116,24 +116,28 @@ class UserActivityEvent < ActiveRecord::Base
 
   def self.subscribed!(user, email=nil, page=nil, content_module=nil)
     create!(
-      :activity => Activity::SUBSCRIBED,
-      :user => user,
-      :content_module => content_module,
-      :email => email,
-      :page => page
+      activity: Activity::SUBSCRIBED,
+      user: user,
+      content_module: content_module,
+      email: email,
+      page: page,
+      opt_in_ip_address: user.opt_in_ip_address,
+      opt_in_url: user.opt_in_url
     )
   end
 
   def self.action_taken!(user, page, content_module, user_response, email, comment=nil)
     create!(
-      :activity => Activity::ACTION_TAKEN,
-      :user => user,
-      :content_module => content_module,
-      :page => page,
-      :user_response => user_response,
-      :email => email,
-      :push => email.try(:blast).try(:push),
-      :comment => comment
+      activity: Activity::ACTION_TAKEN,
+      user: user,
+      content_module: content_module,
+      page: page,
+      user_response: user_response,
+      email: email,
+      push: email.try(:blast).try(:push),
+      comment: comment,
+      opt_in_ip_address: user.opt_in_ip_address,
+      opt_in_url: user.opt_in_url
     )
   end
 
