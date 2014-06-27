@@ -527,6 +527,7 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
   add_index "push_viewed_emails", ["movement_id", "email_id"], :name => "idx_emails"
   add_index "push_viewed_emails", ["movement_id", "push_id"], :name => "idx_pushes"
   add_index "push_viewed_emails", ["push_id"], :name => "index_push_viewed_emails_on_push_id"
+  add_index "push_viewed_emails", ["user_id", "email_id", "created_at"], :name => "idx_unique_open", :unique => true
   add_index "push_viewed_emails", ["user_id", "movement_id", "created_at"], :name => "idx_list_cutter"
 
   create_table "pushes", :force => true do |t|
@@ -587,6 +588,8 @@ ActiveRecord::Schema.define(:version => 20140513213452) do
     t.integer  "movement_id"
     t.string   "comment"
     t.boolean  "comment_safe"
+    t.string   "opt_in_ip_address"
+    t.string   "opt_in_url"
   end
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"
