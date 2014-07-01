@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, :rememberable, :trackable
 
   attr_accessor :required_user_details, :geolocation_service,
-                :opt_in_ip_address, :opt_in_url
+                :ip_address, :referer_url
 
   cattr_accessor :current_user
 
@@ -61,7 +61,7 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :events_attended, :class_name => "Event", :association_foreign_key => "event_id",
                           :foreign_key => "attendee_id", :join_table => "events_attendees"
-  
+
   before_validation :profanalyze_name
   before_validation :downcase_email
   before_validation :ensure_source_is_present

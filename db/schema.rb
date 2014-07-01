@@ -586,8 +586,8 @@ ActiveRecord::Schema.define(:version => 20140626214535) do
     t.integer  "movement_id"
     t.string   "comment"
     t.boolean  "comment_safe"
-    t.string   "opt_in_ip_address"
-    t.string   "opt_in_url"
+    t.string   "ip_address"
+    t.string   "referer_url"
   end
 
   add_index "user_activity_events", ["action_sequence_id"], :name => "idx_uae_action_seq_id"

@@ -104,7 +104,7 @@ class Api::MembersController < Api::BaseController
   end
 
    def create
-    (render json: { errors: "Language field is required"}, status: 422 and return) if params[:member][:language].blank? 
+    (render json: { errors: "Language field is required"}, status: 422 and return) if params[:member][:language].blank?
 
     @member = movement.members.where(email: params[:member][:email]).
                                first_or_initialize(member_params)
@@ -136,8 +136,7 @@ class Api::MembersController < Api::BaseController
                    :postcode, :home_number, :mobile_number, :street_address,
                    :suburb]
 
-  MEMBER_FIELDS_FOR_CREATE = [:email, :opt_in_ip_address, :opt_in_url,
-                              :country_iso]
+  MEMBER_FIELDS_FOR_CREATE = [:email, :ip_address, :referer_url, :country_iso]
 
   def verify_request
     ips = [

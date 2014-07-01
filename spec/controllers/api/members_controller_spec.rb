@@ -6,14 +6,14 @@ describe Api::MembersController do
 
     it "should record the opt in ip address and url" do
       movement = create(:movement)
-      opt_in_ip_address = '127.0.0.1'
-      opt_in_url = 'http://localhost:3000'
+      ip_address = '127.0.0.1'
+      referer_url = 'http://localhost:3000'
 
       post :create_from_salsa, format: :json,
                     member: {email: "lemmy@kilmister.com",
                              language: 'en',
-                             opt_in_ip_address: opt_in_ip_address,
-                             opt_in_url: opt_in_url},
+                             ip_address: ip_address,
+                             referer_url: referer_url},
                     movement_id: movement.id,
                     tag: 'youre_it',
                     guard: 'herro'
@@ -22,8 +22,8 @@ describe Api::MembersController do
                      UserActivityEvent::Activity::SUBSCRIBED]
 
       UserActivityEvent.all.each_with_index do |event, index|
-        expect(event.opt_in_ip_address).to eq opt_in_ip_address
-        expect(event.opt_in_url).to eq opt_in_url
+        expect(event.ip_address).to eq ip_address
+        expect(event.referer_url).to eq referer_url
         expect(event_types.include?(event.activity)).to eq true
         event_types.delete(event.activity)
         expect(event_types.blank?).to eq true if index == 1
@@ -70,20 +70,20 @@ describe Api::MembersController do
     end
 
     it "should record the opt in ip address and url" do
-      opt_in_ip_address = '127.0.0.1'
-      opt_in_url = 'http://localhost:3000'
+      ip_address = '127.0.0.1'
+      referer_url = 'http://localhost:3000'
 
       post :create, format: :json,
                     member: {email: "lemmy@kilmister.com",
                              language: 'en',
-                             opt_in_ip_address: opt_in_ip_address,
-                             opt_in_url: opt_in_url}, movement_id: @movement.id
+                             ip_address: ip_address,
+                             referer_url: referer_url}, movement_id: @movement.id
 
       event = UserActivityEvent.where(activity:
                                 UserActivityEvent::Activity::SUBSCRIBED).first
 
-      expect(event.opt_in_ip_address).to eq opt_in_ip_address
-      expect(event.opt_in_url).to eq opt_in_url
+      expect(event.ip_address).to eq ip_address
+      expect(event.referer_url).to eq referer_url
     end
 
     context 'a welcome page does not exist' do
