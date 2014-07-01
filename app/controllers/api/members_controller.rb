@@ -90,6 +90,10 @@ class Api::MembersController < Api::BaseController
       member.websites << Website.new(:url => params[:website])
     end
 
+    if request.headers['CF-Connecting-IP']
+      member.ip_address = request.headers['CF-Connecting-IP']
+    end
+
     tag = params[:tag] || 'untagged'
     @page = FightForTheFuture.find_or_create_action_page_by_tag(tag)
 
