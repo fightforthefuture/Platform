@@ -58,7 +58,7 @@ describe Api::MembersController do
       @movement = @join_page.movement
     end
 
-    xit 'should send a join email after creating or saving the user' do
+    it 'should send a join email after creating or saving the user' do
       language = @movement.movement_locales.first.language
       email = @movement.movement_locales.first.join_email
       email.from = 'movement@here.com'
@@ -80,7 +80,7 @@ describe Api::MembersController do
       mail.subject.should eql 'Hi there'
     end
 
-    xit "should create a new member unless they exist, and return the member id" do
+    it "should create a new member unless they exist, and return the member id" do
       post :create, :format => :json, :member => {:email => "lemmy@kilmister.com", :language => 'en'}, :movement_id => @movement.id
 
       response.status.should == 201
@@ -89,7 +89,7 @@ describe Api::MembersController do
       json['member_id'].should == User.find_by_email('lemmy@kilmister.com').id
     end
 
-    xit "should record the opt in ip address and url" do
+    it "should record the opt in ip address and url" do
       ip_address = '127.0.0.1'
       referer_url = 'http://localhost:3000'
 
@@ -108,7 +108,7 @@ describe Api::MembersController do
 
     context 'a welcome page does not exist' do
 
-      xit "should create a new member unless they exist, and return blank next page id" do
+      it "should create a new member unless they exist, and return blank next page id" do
         post :create, :format => :json, :member => {:email => "lemmy@kilmister.com", :language => 'en'}, :movement_id => @movement.id
 
         response.status.should == 201
@@ -123,7 +123,7 @@ describe Api::MembersController do
 
     context 'a join page exists' do
 
-      xit "should create a new member unless they exist, set their language, and return join page next page id" do
+      it "should create a new member unless they exist, set their language, and return join page next page id" do
         spanish = FactoryGirl.create(:spanish)
         FactoryGirl.create(:movement_locale, :language => spanish, :movement => @movement)
         campaign = FactoryGirl.create(:campaign, :movement => @movement)
@@ -145,7 +145,7 @@ describe Api::MembersController do
     end
 
     context 'member cannot be created with the attributes provided' do
-      xit 'should return status 422 unprocessable entity when email is missing' do
+      it 'should return status 422 unprocessable entity when email is missing' do
         post :create, :format => :json, :member => {}, :movement_id => @movement.id
 
         response.status.should == 422
@@ -155,7 +155,7 @@ describe Api::MembersController do
         json['errors'].should_not be_blank
       end
 
-      xit 'should return status 422 unprocessable entity when email is invalid' do
+      it 'should return status 422 unprocessable entity when email is invalid' do
         post :create, :format => :json, :member => {:email => "chocolate_rain", :language => :en}, :movement_id => @movement.id
 
         response.status.should == 422
@@ -165,7 +165,7 @@ describe Api::MembersController do
         json['errors'].should_not be_blank
       end
 
-      xit "should return status 422 unprocessable entity when language is not provided" do
+      it "should return status 422 unprocessable entity when language is not provided" do
         post :create, :format => :json, :member => {:email => "lemmy@kilmister.com"}, :movement_id => @movement.id
 
         response.status.should == 422
@@ -177,7 +177,7 @@ describe Api::MembersController do
     end
 
     context 'member tries to join twice' do
-      xit "should not overwrite their existing attributes" do
+      it "should not overwrite their existing attributes" do
         member_attrs = FactoryGirl.attributes_for(:user,
           :email => "lemmy@kilmister.com",
           :first_name => "lemmy",
@@ -200,7 +200,7 @@ describe Api::MembersController do
       end
     end
 
-    xit "should be able to create new members for different movements with the same email addresss" do
+    it "should be able to create new members for different movements with the same email addresss" do
       email = "lemmy@kilmister.com"
       FactoryGirl.create(:user, :email => email, :movement => @movement)
 
@@ -212,7 +212,7 @@ describe Api::MembersController do
     end
 
     context "member joins after getting on the homepage through a link on an email sent to a friend" do
-      xit "should create a subscribed user activity event associated with that email" do
+      it "should create a subscribed user activity event associated with that email" do
         language = @movement.languages.first
         user = FactoryGirl.create(:user, :movement => @movement)
         email = FactoryGirl.create(:email)
@@ -238,7 +238,7 @@ describe Api::MembersController do
         :home_number => '555-5555', :mobile_number => '444-4444', :street_address => "John's place", :suburb => 'NY')
     end
 
-    xit "should retrieve user by email with only significant fields" do
+    it "should retrieve user by email with only significant fields" do
       get :show, :movement_id => @movement.id, :email => 'john.doe@example.com'
 
       response.status.should == 200
@@ -258,13 +258,13 @@ describe Api::MembersController do
       json['suburb'].should == @member.suburb
     end
 
-    xit "should return HTTP 404 (Not Found) if cannot find user by email" do
+    it "should return HTTP 404 (Not Found) if cannot find user by email" do
       get :show, :movement_id => @movement.id, :email => 'user.does.not@exist.com'
 
       response.status.should == 404
     end
 
-    xit "should return HTTP 400 (Bad Request) if email is not sent in request" do
+    it "should return HTTP 400 (Bad Request) if email is not sent in request" do
       get :show, :movement_id => @movement.id
 
       response.status.should == 400
@@ -282,7 +282,7 @@ describe Api::MembersController do
     end
 
 
-    xit 'should unsubscribe the user if given a valid email parameter' do
+    it 'should unsubscribe the user if given a valid email parameter' do
       post :unsubscribe, {movement_id: @movement.id, member: {email: @member.email}}
 
      expect(response.status).to eq(200)
@@ -290,7 +290,7 @@ describe Api::MembersController do
       expect(json).to eq({'data' => {'success' => true}})
     end
 
-    xit 'should fail with an appropriate message if no email it sent in the request' do
+    it 'should fail with an appropriate message if no email it sent in the request' do
       post :unsubscribe, movement_id: @movement.id
 
       expect(response.status).to eq(400)
