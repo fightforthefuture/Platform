@@ -500,16 +500,16 @@ describe Api::ActionPagesController do
       user = create(:user, :movement => @movement, :language => @english)
       tracking_hash = Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id}")
 
-      opt_in_ip_address = '127.0.0.1'
-      opt_in_url = 'http://localhost:3000/action'
+      ip_address = '127.0.0.1'
+      referer_url = 'http://localhost:3000/action'
 
       post :take_action, movement_id: @movement.friendly_id, id: @page.id,
                          t: tracking_hash,
                          member_info: { first_name: user.first_name,
                                         last_name: user.last_name,
                                         email: user.email,
-                                        opt_in_ip_address: opt_in_ip_address,
-                                        opt_in_url: opt_in_url},
+                                        ip_address: ip_address,
+                                        referer_url: referer_url},
                          locale: @english.iso_code
 
       event_types = [UserActivityEvent::Activity::ACTION_TAKEN,
@@ -517,8 +517,8 @@ describe Api::ActionPagesController do
 
       UserActivityEvent.all.each_with_index do |event, index|
         expect(event.email_id).to eq email.id
-        expect(event.opt_in_ip_address).to eq opt_in_ip_address
-        expect(event.opt_in_url).to eq opt_in_url
+        expect(event.ip_address).to eq ip_address
+        expect(event.referer_url).to eq referer_url
         expect(event_types.include?(event.activity)).to eq true
         event_types.delete(event.activity)
         expect(event_types.blank?).to eq true if index == 1

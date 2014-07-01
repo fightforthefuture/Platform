@@ -121,8 +121,8 @@ class UserActivityEvent < ActiveRecord::Base
       content_module: content_module,
       email: email,
       page: page,
-      opt_in_ip_address: user.opt_in_ip_address,
-      opt_in_url: user.opt_in_url
+      ip_address: user.ip_address,
+      referer_url: user.referer_url
     )
   end
 
@@ -136,8 +136,8 @@ class UserActivityEvent < ActiveRecord::Base
       email: email,
       push: email.try(:blast).try(:push),
       comment: comment,
-      opt_in_ip_address: user.opt_in_ip_address,
-      opt_in_url: user.opt_in_url
+      ip_address: user.ip_address,
+      referer_url: user.referer_url
     )
   end
 
