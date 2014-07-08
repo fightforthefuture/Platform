@@ -89,6 +89,12 @@ PurposePlatform::Application.routes.draw do
 
       resources :users
 
+      resources :supporters, only: [:index] do
+        collection do
+          get :search
+        end
+      end
+
       resources :join_emails, :only => [:index]
       post "join_emails" => "join_emails#update"
       resources :email_footers, :only => [:index]
