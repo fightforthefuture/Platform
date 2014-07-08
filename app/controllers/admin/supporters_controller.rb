@@ -8,8 +8,8 @@ module Admin
     def search
       @first_name = param_for_like_search(:first_name)
       @last_name = param_for_like_search(:last_name)
-      @email = param_for_like_search(:email)
-      @supporters = User.for_movement(@movement).where('first_name like ? AND last_name like ? AND email like ?', @first_name, @last_name, @email)
+      @email_address = param_for_like_search(:email)
+      @supporters = User.for_movement(@movement).where('first_name like ? AND last_name like ? AND email like ?', @first_name, @last_name, @email_address)
     end
 
     def param_for_like_search(name)
