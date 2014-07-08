@@ -2,7 +2,7 @@ module Admin
   class SupportersController < AdminController
     layout 'movements'
     def index
-      @supporters = User.for_movement(@movement).take(10)
+      @supporters = User.limit(10).for_movement(@movement)
     end
 
     def search
