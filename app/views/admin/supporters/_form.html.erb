@@ -1,12 +1,12 @@
 <%= form_tag(search_admin_movement_supporters_path(@movement), method: 'get') do |f| %>
   <label for="first_name">First Name</label>
-  <input type="text" id="first_name" name="first_name" value=<%= @first_name %>>
+  <input type="text" id="first_name" name="first_name" value="<%= @first_name %>">
 
   <label for="last_name">Last Name</label>
-  <input type="text" id="last_name" name="last_name" value=<%= @last_name %>>
+  <input type="text" id="last_name" name="last_name" value="<%= @last_name %>">
 
   <label for="email">Email Address</label>
-  <input type="text" id="email" name="email" value=<%= @email %>>
+  <input type="text" id="email" name="email" value="<%= @email_address %>">
 
   <p>Use % as a wildcard that matches any sequence of characters. For example, an email like %gmail% matches any email address that contains gmail at some point.</p>
   <input type="submit"></input>
