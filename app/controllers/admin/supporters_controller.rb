@@ -6,18 +6,26 @@ module Admin
     end
 
     def search
-      @first_name = param_for_like_search(:first_name)
-      @last_name = param_for_like_search(:last_name)
-      @email_address = param_for_like_search(:email)
-      @supporters = User.for_movement(@movement).where('first_name like ? AND last_name like ? AND email like ?', @first_name, @last_name, @email_address)
+      @first_name = params[:first_name]
+      @last_name = params[:last_name]
+      @email_address = params[:email]
+      @supporters =
+        add_param_for_search(
+          add_param_for_search(
+            add_param_for_search(User.for_movement(@movement), 'first_name', @first_name),
+            'last_name',
+            @last_name
+          ),
+          'email',
+          @email_address
+        )
     end
 
-    def param_for_like_search(name)
-      param = params[name]
+    def add_param_for_search(query, name, param)
       if param and not param.empty?
-        param
+        query.where("#{name} LIKE ?", param)
       else
-        '%'
+        query
       end
     end
   end
