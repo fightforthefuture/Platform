@@ -15,13 +15,13 @@ module Admin
 
       case @operation
       when 'unsubscribe'
-        @supporters = make_query
-        @supporters.each do |supporter|
+        @supporters = make_query.readonly(false)
+        @supporters.find_each do |supporter|
           supporter.unsubscribe!
         end
       when 'subscribe'
-        @supporters = make_query
-        @supporters.each do |supporter|
+        @supporters = make_query.readonly(false)
+        @supporters.find_each do |supporter|
           supporter.ip_address = supporter.ip_address || request.remote_ip
           supporter.referer_url = supporter.referer_url || request.referer
           supporter.join_through_external_action!
@@ -30,8 +30,8 @@ module Admin
         if not @page_name or @page_name.empty?
           render status: :bad_request, json: {data: {success: false, reason: "Cannot delete page without specifying a page name"}} and return
         else
-          @supporters = make_query
-          @supporters.each do |supporter|
+          @supporters = make_query.readonly(false)
+          @supporters.find_each do |supporter|
             query = <<-eos
               SELECT COUNT(uae.id) AS count FROM user_activity_events AS uae, pages
               WHERE uae.page_id = pages.id
