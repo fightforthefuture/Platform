@@ -6,8 +6,11 @@
   <input type="text" id="last_name" name="last_name" value="<%= @last_name %>">
 
   <label for="email">Email Address</label>
-  <input type="text" id="email" name="email" value="<%= @email_address %>">
+  <input type="text" id="email" name="email_address" value="<%= @email_address %>">
 
-  <p>Use % as a wildcard that matches any sequence of characters. For example, an email like %gmail% matches any email address that contains gmail at some point.</p>
-  <input type="submit"></input>
+  <p>Use % as a wildcard that matches any sequence of characters. For example, an email like %gmail% matches any email address that contains gmail at any point.</p>
+
+  <label for="page_name">Has Performend an Activity on Page Named</label>
+  <input type="text" id="page_name" name="page_name" value="<%= @page_name %>">
+  <input type="submit" name="search" value="Search"></input>
 <% end %>
