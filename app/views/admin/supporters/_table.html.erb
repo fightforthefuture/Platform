@@ -4,7 +4,7 @@
       <tr> <th>ID</th> <th>Name</th> <th>Email</th> <th>Is Member?</th> </tr>
     </thead>
     <tbody>
-      <% @supporters.each do |supporter| %>
+      <% @supporters.find_each do |supporter| %>
         <tr>
           <td><%= supporter.id %></td>
           <td><%= supporter.name %></td>
