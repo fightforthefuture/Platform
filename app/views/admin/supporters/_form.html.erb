@@ -1,4 +1,4 @@
-<%= form_tag(search_admin_movement_supporters_path(@movement), method: 'get') do |f| %>
+<form id="supporters_search_form">
   <label for="first_name">First Name</label>
   <input type="text" id="first_name" name="first_name" value="<%= @first_name %>">
 
@@ -10,7 +10,7 @@
 
   <p>Use % as a wildcard that matches any sequence of characters. For example, an email like %gmail% matches any email address that contains gmail at any point.</p>
 
-  <label for="page_name">Has Performend an Activity on Page Named</label>
+  <label for="page_name">Has Performed an Activity on Page Named</label>
   <input type="text" id="page_name" name="page_name" value="<%= @page_name %>">
-  <input type="submit" name="search" value="Search"></input>
-<% end %>
+  <button name="search"><p>Search</p></button>
+</form>

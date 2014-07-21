@@ -3,10 +3,10 @@
   <input type="hidden" name="last_name" value="<%= @last_name %>">
   <input type="hidden" name="email_address" value="<%= @email_address %>">
   <input type="hidden" name="page_name" value="<%= @page_name %>">
-  <button name="unsubscribe" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Unsubscribe</p></button>
-  <button name="subscribe" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Subscribe</p></button>
+  <button name="unsubscribe"><p>Unsubscribe</p></button>
+  <button name="subscribe"><p>Subscribe</p></button>
   <% if @page_name and not @page_name.empty? %>
-    <button name="delete" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Delete Supporters</p></button>
+    <button name="delete"><p>Delete Supporters</p></button>
   <% end %>
 </div>
 
