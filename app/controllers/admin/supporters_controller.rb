@@ -29,10 +29,10 @@ module Admin
       case @operation
       when 'unsubscribe'
         job = make_job('unsubscribe')
-        SupportersActionEvent::Unsubscribe.new(@movement.id, job.id).delay.handle
+        SupportersActionEvent::Unsubscribe.new(@movement.id, job.id).delay(queue: QueueConfigs::HIGH_QUEUE).handle
       when 'subscribe'
         job = make_job('subscribe')
-        SupportersActionEvent::Subscribe.new(@movement.id, job.id, request).delay.handle
+        SupportersActionEvent::Subscribe.new(@movement.id, job.id, request).delay(queue: QueueConfigs::HIGH_QUEUE).handle
       when 'delete'
         if not @page_name or @page_name.empty?
           render status: :bad_request, json: {data: {success: false, reason: "Cannot delete page without specifying a page name"}} and return
@@ -42,7 +42,7 @@ module Admin
         end
       when 'query'
         job = make_job('query')
-        SupportersActionEvent::Query.new(@movement.id, job.id).delay.handle
+        SupportersActionEvent::Query.new(@movement.id, job.id).delay(queue: QueueConfigs::HIGH_QUEUE).handle
       else
       end
 
