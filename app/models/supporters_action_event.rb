@@ -1,4 +1,24 @@
 module SupportersActionEvent
+  # Delete any old jobs and associated tables. We arbitrarily delete
+  # jobs that are over a day old (and have been completed.)
+  def self.garbage_collect
+    jobs = SupportersActionJob.where("complete = ? AND created_at <= ?", true, DateTime.yesterday)
+    jobs.find_each do |job|
+      case job.operation
+      when "query"
+        query = "DROP TABLE #{SupportersActionJob.job_table(job)}"
+        ActiveRecord::Base.connection.execute(query)
+        job.delete!
+      else
+        job.delete!
+      end
+    end
+  end
+
+  def self.job_table(job)
+    "supporters_action_#{@job.id}"
+  end
+
 
   class Event
     # job is a SupportersActionJob
@@ -10,6 +30,10 @@ module SupportersActionEvent
     def handle
       @movement = Movement.find_by_id(@movement_id)
       @job = SupportersActionJob.find_by_id(@job_id)
+      # Every time we run an event, do a garbage collection pass
+      # first. This should be fairly fast, as there shouldn't be many
+      # old jobs to clean up.
+      SupportersActionEvent.garbage_collect
     end
 
     def make_query(job)
@@ -43,6 +67,7 @@ module SupportersActionEvent
       end
     end
   end
+
 
   class Subscribe < Event
     def initialize(movement_id, job_id, request)
@@ -129,7 +154,7 @@ module SupportersActionEvent
       super
 
       supporters = make_query(@job)
-      query = "CREATE TABLE supporters_action_#{@job.id} AS #{supporters.to_sql}"
+      query = "CREATE TABLE #{SupportersActionEvent.job_table(@job.id)} AS #{supporters.to_sql}"
       ActiveRecord::Base.connection.execute(query)
       @job.complete!
     end
