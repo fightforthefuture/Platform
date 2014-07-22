@@ -6,7 +6,7 @@ module SupportersActionEvent
     jobs.find_each do |job|
       case job.operation
       when "query"
-        query = "DROP TABLE #{SupportersActionJob.job_table(job)}"
+        query = "DROP TABLE #{SupportersActionEvent::job_table(job.id)}"
         ActiveRecord::Base.connection.execute(query)
         job.delete!
       else
@@ -15,8 +15,8 @@ module SupportersActionEvent
     end
   end
 
-  def self.job_table(job)
-    "supporters_action_#{@job.id}"
+  def self.job_table(job_id)
+    "supporters_action_#{job_id}"
   end
 
 
@@ -33,7 +33,7 @@ module SupportersActionEvent
       # Every time we run an event, do a garbage collection pass
       # first. This should be fairly fast, as there shouldn't be many
       # old jobs to clean up.
-      SupportersActionEvent.garbage_collect
+      SupportersActionEvent::garbage_collect
     end
 
     def make_query(job)
@@ -154,7 +154,7 @@ module SupportersActionEvent
       super
 
       supporters = make_query(@job)
-      query = "CREATE TABLE #{SupportersActionEvent.job_table(@job.id)} AS #{supporters.to_sql}"
+      query = "CREATE TABLE #{SupportersActionEvent::job_table(@job.id)} AS #{supporters.to_sql}"
       ActiveRecord::Base.connection.execute(query)
       @job.complete!
     end
