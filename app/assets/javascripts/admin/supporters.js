@@ -3,6 +3,7 @@ $(document).ready(function() {
   $('#supporters_delete_prompt').hide();
   $('#supporters_unsubscribe_prompt').hide();
   $('#supporters_subscribe_prompt').hide();
+  $('.progressbar').hide();
   $('#supporters_action_form [name="unsubscribe"]').click(Supporters.unsubscribePrompt);
   $('#supporters_action_form [name="subscribe"]').click(Supporters.subscribePrompt);
   $('#supporters_action_form [name="delete"]').click(Supporters.deletePrompt);
@@ -25,6 +26,12 @@ window.Supporters = {
     return $('#supporters_action_form');
   },
 
+
+  searchPrompt: function() {
+    var prompt = $('#supporters_search_prompt');
+    prompt.dialog({modal: true});
+    Supporters.progressBar(prompt);
+  },
 
   deletePrompt: function() {
     Supporters.doPrompt('delete', Supporters.deleteAction);
@@ -52,6 +59,7 @@ window.Supporters = {
         },
         { text: "Ok",
           click: function() {
+            Supporters.progressBar(prompt);
             action(Supporters.actionUrl());
             return true;
           }
@@ -61,9 +69,29 @@ window.Supporters = {
   },
 
 
+  // A "fake" progress bar that increments from 0 to 100 over
+  // 100s. This should be enough for most queries to finish.
+  progressBar: function(prompt) {
+    var progressbar = prompt.find('.progressbar');
+    var value = 0;
+    progressbar.progressbar({value: value}).show();
+    var timeoutId = null;
+    var inc = function() {
+      value++;
+      if(value <= 100) {
+        progressbar.progressbar("option", "value", value)
+      } else {
+        window.clearTimeout(timeoutId);
+      }
+    };
+    timeoutId = window.setInterval(inc, 1000);
+    return progressbar;
+  },
+
   search: function(evt) {
     console.log('search', 'start');
     evt.preventDefault();
+    Supporters.searchPrompt();
     var form = $('#supporters_search_form');
     Supporters.searchAction(form);
     return false;
@@ -73,7 +101,6 @@ window.Supporters = {
   searchAction: function(form) {
     var url = Supporters.actionUrl();
     var formData = Supporters.getFormData(form);
-
     return Supporters.submitAction(url, 'query', formData)
       .then(Supporters.pollUntilDone)
       .then(Supporters.redirectToView);
@@ -146,7 +173,7 @@ window.Supporters = {
 
       })
     }
-    timeoutId = window.setTimeout(check, 5000);
+    timeoutId = window.setInterval(check, 5000);
     return deferred;
   },
 
