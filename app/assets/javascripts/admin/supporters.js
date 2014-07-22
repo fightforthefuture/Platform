@@ -3,6 +3,7 @@ $(document).ready(function() {
   $('#supporters_delete_prompt').hide();
   $('#supporters_unsubscribe_prompt').hide();
   $('#supporters_subscribe_prompt').hide();
+  $('#supporters_search_prompt').hide();
   $('.progressbar').hide();
   $('#supporters_action_form [name="unsubscribe"]').click(Supporters.unsubscribePrompt);
   $('#supporters_action_form [name="subscribe"]').click(Supporters.subscribePrompt);
