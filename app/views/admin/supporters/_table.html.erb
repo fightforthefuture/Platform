@@ -7,7 +7,7 @@
       <% @supporters.each do |supporter| %>
         <tr>
           <td><%= supporter[0] %></td>
-          <td><%= supporter[1] + ' ' + supporter[2] %></td>
+          <td><%= (supporter[1] || '') + ' ' + (supporter[2] || '') %></td>
           <td><%= supporter[3] %></td>
           <td><%= supporter[4] %></td>
         </tr>
