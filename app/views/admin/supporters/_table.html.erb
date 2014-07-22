@@ -6,10 +6,10 @@
     <tbody>
       <% @supporters.each do |supporter| %>
         <tr>
-          <td><%= supporter.id %></td>
-          <td><%= supporter.name %></td>
-          <td><%= supporter.email %></td>
-          <td><%= supporter.is_member %></td>
+          <td><%= supporter[0] %></td>
+          <td><%= supporter[1] + ' ' + supporter[2] %></td>
+          <td><%= supporter[3] %></td>
+          <td><%= supporter[4] %></td>
         </tr>
       <% end %>
     </tbody>

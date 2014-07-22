@@ -3,24 +3,27 @@
   <input type="hidden" name="last_name" value="<%= @last_name %>">
   <input type="hidden" name="email_address" value="<%= @email_address %>">
   <input type="hidden" name="page_name" value="<%= @page_name %>">
-  <button name="unsubscribe" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Unsubscribe</p></button>
-  <button name="subscribe" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Subscribe</p></button>
+  <button name="unsubscribe"><p>Unsubscribe</p></button>
+  <button name="subscribe"><p>Subscribe</p></button>
   <% if @page_name and not @page_name.empty? %>
-    <button name="delete" data-url="<%= action_admin_movement_supporters_path(@movement) %>"><p>Delete Supporters</p></button>
+    <button name="delete"><p>Delete Supporters</p></button>
   <% end %>
 </div>
 
 <div class="hidden" id="supporters_delete_prompt">
   <h3>Delete This Page's Supporters?</h3>
   <p>This will remove any events associated with the page, and any users that have not performed an action on another page. Are you sure you want to do this?<p>
+  <div class="progressbar"></div>
 </div>
 
 <div class="hidden" id="supporters_unsubscribe_prompt">
   <h3>Unsubscribe These Supporters?</h3>
   <p>Unsubscribing these users cannot be easily undone. Are you sure you want to do this?</p>
+  <div class="progressbar"></div>
 </div>
 
 <div class="hidden" id="supporters_subscribe_prompt">
   <h3>Subscribe These Supporters?</h3>
   <p>Subscribing these users cannot be easily undone. Are you sure you want to do this?</p>
+  <div class="progressbar"></div>
 </div>

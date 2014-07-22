@@ -10,21 +10,21 @@ module ApplicationHelper
   def now
     Time.now.utc.strftime("%Y/%m/%d %H:%M:%S")
   end
-  
+
   def form_errors(subject)
     render :partial => "common/form_errors", :locals => {:subject => subject}
   end
-  
+
   def friendly_path(page)
     campaign_id = page.action_sequence.campaign ? page.action_sequence.campaign.friendly_id : nil
     page_path(campaign_id, page.action_sequence.friendly_id, page.friendly_id)
   end
-  
+
   def friendly_url(page)
     campaign_id = page.action_sequence.campaign ? page.action_sequence.campaign.friendly_id : nil
     page_url(campaign_id, page.action_sequence.friendly_id, page.friendly_id)
   end
-  
+
   def word_truncate(text, length = 30, truncate_string = "...")
     return if text.nil?
     l = length - truncate_string.length
@@ -38,8 +38,8 @@ module ApplicationHelper
   def javascript_external_dependencies
     if Rails.env.production? || Rails.env.staging?
       %w(
-        //ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
-        //ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
+        //ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js
+        //ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js
         //www.google.com/jsapi
       )
     else
@@ -91,7 +91,7 @@ module ApplicationHelper
 
   def email_stats_table(stats_table)
     if stats_table.full_rows.present?
-      
+
     end
   end
 

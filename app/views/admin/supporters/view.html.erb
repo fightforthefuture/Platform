@@ -1,0 +1,9 @@
+<%= page_header "Matching Supporters" %>
+
+<%= render 'urls' %>
+<%= render 'form' %>
+
+<p>Found <%= @supporters.size %> supporters matching your query.</p>
+<%= render 'table' %>
+
+<%= render 'action_form' %>

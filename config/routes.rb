@@ -91,8 +91,9 @@ PurposePlatform::Application.routes.draw do
 
       resources :supporters, only: [:index] do
         collection do
-          get :search
+          get :view
           get :action
+          get :poll
         end
       end
 
