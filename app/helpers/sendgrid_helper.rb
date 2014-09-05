@@ -14,10 +14,15 @@ module SendgridHelper
   #  "spamreports"=>0, "clicks"=>0, "opens"=>0, "unique_opens"=>0}
   def sendgrid_email_stats(email_id)
 
-   uri = "http://sendgrid.com/api/stats.get.json?aggregate=1&category=#{email_id}&api_user=#{AppConstants.sendgrid_api_username}&api_key=#{AppConstants.sendgrid_api_password}"
+    uri = "http://sendgrid.com/api/stats.get.json?aggregate=1&category=#{email_id}&api_user=#{AppConstants.sendgrid_api_username}&api_key=#{AppConstants.sendgrid_api_password}"
 
     # SendGrid returns a list, so unwrap the single element in that list.
-    JSON.parse(Net::HTTP.get(URI.parse(uri)))[0]
+    begin
+      JSON.parse(Net::HTTP.get(URI.parse(uri)))[0]
+    rescue
+      # something is wrong with the Sendgrid API or the network, fail gracefully
+      nil
+    end
   end
 
 end
