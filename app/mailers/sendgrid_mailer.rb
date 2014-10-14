@@ -3,7 +3,7 @@ class SendgridMailer < ActionMailer::Base
   def user_email(email, user, tokens = {})
     return unless user.can_subscribe?
 
-    @body_text = pre_process_body(email.body, user, tokens)
+    @body_text = pre_process_body(email.body, user, {"EMAIL_ID" => email.id, "USER" => Base64.urlsafe_encode64("userid=#{user.id},emailid=#{email.id},useremail=#{user.email}")}.merge(tokens || {}))
     @footer = email.footer
 
     options = {
