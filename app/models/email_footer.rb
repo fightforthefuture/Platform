@@ -24,7 +24,7 @@ class EmailFooter < ActiveRecord::Base
 
   def html_with_beacon
     base_url = movement.url.starts_with?("http://", "https://") ? movement.url : "http://#{movement.url}"
-    self.html + %{<img src="#{base_url}/beacon.gif?t={TRACKING_HASH|NOT_AVAILABLE}">}.html_safe
+    # self.html + %{<img src="#{base_url}/beacon.gif?t={TRACKING_HASH|NOT_AVAILABLE}">}.html_safe
   end
 
   def html
