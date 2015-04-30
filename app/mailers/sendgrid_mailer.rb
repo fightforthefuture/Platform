@@ -25,7 +25,8 @@ class SendgridMailer < ActionMailer::Base
   # @param batch_number (Integer or false)
   def blast_email(email, batch_number, options)
     @body_text = { :html => email.html_body, :text => email.plain_text_body }
-    @footer = email.footer.present? ? { :html => email.footer.html_with_beacon, :text => email.footer.text } : {}
+    # @footer = email.footer.present? ? { :html => email.footer.html_with_beacon, :text => email.footer.text } : {}
+    @footer = {} # JL HACK
     options[:recipients] = clean_recipient_list(options[:recipients])
 
     prepare(email, batch_number, options)
